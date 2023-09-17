@@ -1,4 +1,5 @@
-package receivedecrypt; /**
+package receivedecrypt;
+/**
  * Material/Labs para SRSC 20/21, Sem-1
  * hj
  **/
@@ -8,9 +9,9 @@ package receivedecrypt; /**
 
 import java.io.*;
 import java.net.*;
-import java.security.spec.KeySpec;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
+import common.*;
 
 /**
  * Decifra
