@@ -15,7 +15,7 @@ public class GenerateKey {
 	
 	/*****************************************************************
 	 Initializations
-	 Use proper parameterizarions
+	 Use proper parameterization
 	 note) Different symmetric algorithms use different keysizes ...
 	 ****************************************************************/
 	

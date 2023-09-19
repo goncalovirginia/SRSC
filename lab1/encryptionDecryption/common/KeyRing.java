@@ -26,7 +26,7 @@ public class KeyRing {
 	// etc ... You can use different algorithms ...
 	
 	public static final String ALGORITHM = "AES"; // We will use AES
-	public static final String KEYRING = "keyring"; // A file to store Key Objects
+	public static final String KEYRING = "lab1/encryptionDecryption/common/keyring"; // A file to store Key Objects
 	
 	// Later on we will use keystores or keyrings to store/manage keys
 	

@@ -7,12 +7,15 @@ package encryptionDecryption.ex2.receivedecrypt;
 // ReceiveDecrypt.java 
 // Recebe e decifra 
 
-import encryptionDecryption.common.*;
+import encryptionDecryption.common.KeyRing;
+import encryptionDecryption.common.Utils;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import java.io.DataInputStream;
+import java.io.File;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -23,7 +26,7 @@ public class ReceiveDecrypt {
 	
 	public static void main(String[] args) throws Exception {
 		
-		Integer port = 5999; // Default, change it if you want
+		int port = 5999; // Default, change it if you want
 		
 		// Ciphersuite security associations (parameters)
 		// Crypto Alg., Mode and Padding
@@ -46,14 +49,14 @@ public class ReceiveDecrypt {
 		};
 		IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
 		
-		System.out.println("\nWait cyphertext o port: " + port);
-		System.out.println("Ciphersuite:" + ciphersuite);
+		System.out.println("Hostname: " + InetAddress.getLocalHost().getHostAddress());
+		System.out.println("Wait cyphertext o port: " + port);
+		System.out.println("Ciphersuite: " + ciphersuite);
 		System.out.println();
 		
 		// Ler chave secreta
 		SecretKey key = KeyRing.readSecretKey(); // Ok, I know / I share the key with sender
-		byte[] ciphertext = null;
-		
+		byte[] ciphertext;
 		
 		for (; ; ) {
 			ServerSocket ss = new ServerSocket(port);

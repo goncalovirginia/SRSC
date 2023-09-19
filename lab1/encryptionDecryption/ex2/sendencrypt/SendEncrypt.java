@@ -6,7 +6,8 @@ package encryptionDecryption.ex2.sendencrypt;
 
 // SendEncrypt.java: cifrar e enviar uma mensagem usando um socket TCP
 
-import encryptionDecryption.common.*;
+import encryptionDecryption.common.KeyRing;
+import encryptionDecryption.common.Utils;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -28,27 +29,25 @@ public class SendEncrypt {
 		// Se quizer passe em parametro a seguir
 		
 		if (args.length != 2) {
-			System.out.println("Usar: SenEncrypt <hostname> <port>");
+			System.out.println("Usar: SendEncrypt <hostname> <port>");
 			System.exit(-1);
 		}
 		
 		String desthost = args[0]; // Default;
-		Integer destport = Integer.parseInt(args[1]); // Default;
+		int destport = Integer.parseInt(args[1]); // Default;
 		
 		// Defaults para a Cifra... Se quizer passe em parametro a seguir
 		String ciphersuite = "AES/CTR/NoPadding";
-		
 		
 		byte[] ivBytes = new byte[]{
 			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
 			0x08, 0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15
 		};
+		
 		IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
 		
-		
-		System.out.println("\nDestino:" + desthost + " Porto:" + destport);
-		System.out.println("Ciphersuite a usar: "
-			+ ciphersuite);
+		System.out.println("Host: " + desthost + " Port: " + destport);
+		System.out.println("Ciphersuite a usar: " + ciphersuite);
 		
 		String plaintext = "INIT";
 		SecretKey key = KeyRing.readSecretKey();
