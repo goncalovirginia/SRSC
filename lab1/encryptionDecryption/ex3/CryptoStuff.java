@@ -39,15 +39,12 @@ public class CryptoStuff {
 		};
 	
 	
-	public static void encrypt(String key, File inputFile, File outputFile)
-		throws CryptoException {
+	public static void encrypt(String key, File inputFile, File outputFile) throws CryptoException {
 		doCrypto(Cipher.ENCRYPT_MODE, key, inputFile, outputFile);
 	}
 	
-	private static void doCrypto(int cipherMode, String key, File inputFile,
-	                             File outputFile) throws CryptoException {
+	private static void doCrypto(int cipherMode, String key, File inputFile, File outputFile) throws CryptoException {
 		try {
-			
 			IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
 			Key secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
 			Cipher cipher = Cipher.getInstance(TRANSFORMATION);
@@ -72,7 +69,30 @@ public class CryptoStuff {
 		         | IOException ex) {
 			throw new CryptoException("Error encrypting/decrypting file", ex);
 		}
-		
 	}
 	
+	public static String decrypt(String key, File encryptedFile) throws CryptoException {
+		try {
+			IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
+			Key secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
+			Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+			cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+			
+			FileInputStream inputStream = new FileInputStream(encryptedFile);
+			byte[] inputBytes = new byte[(int) encryptedFile.length()];
+			inputStream.read(inputBytes);
+			
+			byte[] outputBytes = cipher.doFinal(inputBytes);
+			
+			inputStream.close();
+			
+			return new String(outputBytes);
+		} catch (NoSuchPaddingException | NoSuchAlgorithmException
+		         | InvalidKeyException | BadPaddingException
+		         | IllegalBlockSizeException
+		         | InvalidAlgorithmParameterException
+		         | IOException ex) {
+			throw new CryptoException("Error encrypting/decrypting file", ex);
+		}
+	}
 }
