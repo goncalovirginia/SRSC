@@ -37,13 +37,12 @@ public class FTTCPServer {
 				if (buf[n] == 0) break;
 			}
 			String filename = new String(buf, 0, n);
-			System.out.println("Receiving: '" + new String(buf, 0, n) + "'");
 			System.out.println("Receiving: " + filename);
 			
-			FileOutputStream f = new FileOutputStream(new String(buf, 0, n));
-			// FileOutputStream f = new FileOutputStream("tmp.out");
+			//FileOutputStream f = new FileOutputStream(new String(buf, 0, n));
+			FileOutputStream f = new FileOutputStream("tmp.out");
 			
-			// Instrumentation for transfer statstics
+			// Instrumentation for transfer statistics
 			long startime = System.currentTimeMillis();
 			int count = 0;
 			while ((n = is.read(buf)) > 0) {
@@ -61,7 +60,7 @@ public class FTTCPServer {
 			
 			// Transfer statistics observed by server
 			count = 8 * count / 1000;
-			System.out.println("Throughput: " + count / (endtime - startime) + " Kbits/s");
+			System.out.println("Throughput: " + count / (endtime - startime + 1) + " Kbits/s");
 			
 		}
 	}
