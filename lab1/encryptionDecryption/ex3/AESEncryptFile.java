@@ -24,10 +24,11 @@ public class AESEncryptFile {
 		File encryptedFile = new File(encryptedfile);
 		
 		try {
+			System.out.println("Input file: " + inputFile);
 			CryptoStuff.encrypt(key, inputFile, encryptedFile);
-			System.out.println("Encrypted file " + encryptedFile + " has been created");
+			System.out.println("Encrypted file: " + encryptedFile);
 			String decryptedFileString = CryptoStuff.decrypt(key, encryptedFile);
-			System.out.println(encryptedFile + " Decrypted:");
+			System.out.println("Decrypted: " + encryptedFile);
 			System.out.println(decryptedFileString);
 		} catch (CryptoException ex) {
 			System.out.println(ex.getMessage());
