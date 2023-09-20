@@ -1,8 +1,12 @@
 package fileTransfer.FTTCPClient;
 
+import fileTransfer.Crypto;
+
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.Paths;
+import java.util.Arrays;
 
 
 public class FTTCPClient {
@@ -11,37 +15,37 @@ public class FTTCPClient {
 	
 	public static void main(String[] args) throws Exception {
 		if (args.length != 3) {
-			System.out.println("usage: java FTTCPClient host port filename");
+			System.out.println("usage: java FTTCPClient <host> <port> <file path>");
 			System.exit(0);
 		}
+		
 		String server = args[0];
 		int port = Integer.parseInt(args[1]);
-		String filename = args[2];
+		String filePath = args[2];
 		
-		System.out.println("Sending: " + filename);
-		// open file
-		FileInputStream f = new FileInputStream(filename);
+		System.out.println("Reading: " + filePath);
+		FileInputStream fileInputStream = new FileInputStream(filePath);
 		
-		// Cria uma conexao para o servidor 
 		Socket socket = new Socket(server, port);
-		// Obtem o canal de escrita associado ao socket.
-		OutputStream os = socket.getOutputStream();
+		OutputStream outputStream = socket.getOutputStream();
 		
-		os.write(filename.getBytes()); // envia nome do ficheiro
+		String fileName = Paths.get(filePath).getFileName().toString();
 		
-		os.write(new byte[]{0}); // envia separador
+		System.out.println("Sending File Name: " + fileName);
+		outputStream.write(fileName.getBytes());
+		outputStream.write(new byte[]{0});
 		
+		System.out.println("Sending encrypted blocks of size: " + BLOCKSIZE);
 		int n;
 		byte[] buf = new byte[BLOCKSIZE];
-		while ((n = f.read(buf)) > 0)   // copia o ficheiro para o servidor
-			os.write(buf, 0, n);
+		while ((n = fileInputStream.read(buf)) > 0) {
+			outputStream.write(Crypto.encrypt(buf), 0, n);
+		}
 		
-		// Fecha o socket, quebrando a ligacao com o servidor.
-		// (como consequencia tambem e' feito os.close() )
 		socket.close();
-		f.close();
+		fileInputStream.close();
 		
-		System.out.println("Done");
+		System.out.println("Transfer complete");
 	}
 	
 }
