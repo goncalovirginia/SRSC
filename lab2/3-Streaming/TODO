@@ -1,0 +1,31 @@
+Download the archive streaming.tgz.
+Follow the next steps (following also explanations in class).
+
+Step 1. 
+-------
+Compile, run and learn what the code do (hjStreamingServer and
+hjProxy). You can use the VLC tool to play the streamed-movies from
+the Streaming Server or proxied by the hjProxy.
+
+The movie frames are sent  not encrypited (cleartext frames), as you
+can see.
+
+VLC is avaliable at: 
+https://www.videolan.org/
+
+
+
+
+Step 2.
+------
+
+Challenge: modify the Streaming server and the proxy to support
+encrypted streaming. Each movie frame is sent encrypted.
+You can use AES, keys with sizes of 128 or 256 bits.
+For the encryption/decryption mode use CTR mode and for padding use PKCS5Padding
+(as seen before in exercises ex1 and ex2).
+
+Your VLC must be able to play the movie correctly, in real time
+streaming received from the Proxy (that will decryot the transmission).
+
+Try to do this in the class or you can finish off-line until next week.
