@@ -5,14 +5,20 @@ import javax.crypto.spec.IvParameterSpec;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.security.Security;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * Message Tampering - cifra com uma sintese, AES e modo CTR
  */
 public class TamperedEvenWithDigest {
-    public static void main(
-            String[] args)
-            throws Exception {
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
+    public static void main(String[] args)throws Exception {
         SecureRandom random = new SecureRandom();
         IvParameterSpec ivSpec = Utils.createCtrIvForAES(1, random);
         Key key = Utils.createKeyForAES(256, random);

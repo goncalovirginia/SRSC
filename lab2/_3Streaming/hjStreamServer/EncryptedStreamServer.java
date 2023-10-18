@@ -1,12 +1,12 @@
 package _3Streaming.hjStreamServer;
 
+import _3Streaming.Crypto;
+
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-
-import _3Streaming.Crypto;
 
 class EncryptedStreamServer {
 

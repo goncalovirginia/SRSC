@@ -10,9 +10,8 @@ import java.security.SecureRandom;
  * - Message Tampering
  */
 public class TamperedExample {
-    public static void main(
-            String[] args)
-            throws Exception {
+
+    public static void main(String[] args) throws Exception {
         SecureRandom random = new SecureRandom();
         IvParameterSpec ivSpec = Utils.createCtrIvForAES(1, random);
         Key key = Utils.createKeyForAES(256, random);
@@ -20,8 +19,8 @@ public class TamperedExample {
         String input = "Transferir EUROS:0000100 to AC 1234-5678";
 
         System.out.println("input : " + input);
-        // Cifrar
 
+        // Cifrar
         cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
         byte[] cipherText = cipher.doFinal(Utils.toByteArray(input));
         System.out.println("ciphertext no canal : " + Utils.toHex(cipherText));
@@ -50,4 +49,5 @@ public class TamperedExample {
         byte[] plainText = cipher.doFinal(cipherText);
         System.out.println("plain : " + Utils.toString(plainText));
     }
+
 }

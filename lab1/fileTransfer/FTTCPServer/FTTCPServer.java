@@ -12,8 +12,8 @@ import java.net.Socket;
 
 public class FTTCPServer {
 
-    static final int BLOCKSIZE = 1024;
     public static final int PORT = 8000;
+    static final int BLOCKSIZE = 1024;
 
     /**
      * @param args

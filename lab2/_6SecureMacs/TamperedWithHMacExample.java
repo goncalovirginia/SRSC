@@ -12,9 +12,8 @@ import java.security.SecureRandom;
  * Message tampering com HMAC, cifra AES e modo CTR
  */
 public class TamperedWithHMacExample {
-    public static void main(
-            String[] args)
-            throws Exception {
+
+    public static void main(String[] args) throws Exception {
         SecureRandom random = new SecureRandom();
         IvParameterSpec ivSpec = Utils.createCtrIvForAES(1, random);
         Key key = Utils.createKeyForAES(256, random);
@@ -70,4 +69,5 @@ public class TamperedWithHMacExample {
         System.out.println("plain : " + Utils.toString(plainText, messageLength));
         System.out.println("Verified w/ message-integrity and message-authentication :" + MessageDigest.isEqual(hMac.doFinal(), messageHash));
     }
+
 }

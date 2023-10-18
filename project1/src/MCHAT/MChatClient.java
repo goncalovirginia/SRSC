@@ -140,6 +140,62 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
         });
     }
 
+    // Command-line invocation expecting three arguments
+    public static void main(String[] args) {
+        if ((args.length != 3) && (args.length != 4)) {
+            System.err.println("Use: MChatCliente "
+                    + "<nickusername> <grupo IPMulticast> <porto> { <ttl> }");
+            System.err.println(" - TTL default = 1");
+            System.exit(1);
+        }
+
+        String username = args[0];
+        InetAddress group = null;
+        int port = -1;
+        int ttl = 1;
+
+        try {
+            group = InetAddress.getByName(args[1]);
+        } catch (Throwable e) {
+            System.err.println("Invalid IPv4 Multicat Address "
+                    + e.getMessage());
+            System.exit(1);
+        }
+
+        if (!group.isMulticastAddress()) {
+            System.err.println("Group: " + args[1]
+                    + " is not a valid IP multicast");
+            System.exit(1);
+        }
+
+        try {
+            port = Integer.parseInt(args[2]);
+        } catch (NumberFormatException e) {
+            System.err.println("Porto invalido: " + args[2]);
+            System.exit(1);
+        }
+
+        if (args.length >= 4) {
+            try {
+                ttl = Integer.parseInt(args[3]);
+            } catch (NumberFormatException e) {
+                System.err.println("TTL invalido: " + args[3]);
+                System.exit(1);
+            }
+        }
+
+        try {
+            MChatClient frame = new MChatClient();
+            frame.setSize(800, 300);
+            frame.setVisible(true);
+
+            frame.join(username, group, port, ttl);
+        } catch (Throwable e) {
+            System.err.println("Error starting frame: " + e.getClass().getName() + ": " + e.getMessage());
+            System.exit(1);
+        }
+    }
+
     /**
      * Ca be used to add a user (foining the chat) in the buddy list
      */
@@ -266,13 +322,11 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
         }
     }
 
-
     // Process a received message
     public void chatMessageReceived(String username, InetAddress address,
                                     int port, String message) {
         log("MSG:[" + username + "@" + address.getHostName() + "] said : " + message);
     }
-
 
     // Process when a user joined the chat-messaging
     public void chatParticipantJoined(String username, InetAddress address, int port) {
@@ -284,61 +338,5 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
                                     int port) {
         log("--- USER: " + username + " leaves from " + address.getHostName() + ":"
                 + port);
-    }
-
-    // Command-line invocation expecting three arguments
-    public static void main(String[] args) {
-        if ((args.length != 3) && (args.length != 4)) {
-            System.err.println("Use: MChatCliente "
-                    + "<nickusername> <grupo IPMulticast> <porto> { <ttl> }");
-            System.err.println(" - TTL default = 1");
-            System.exit(1);
-        }
-
-        String username = args[0];
-        InetAddress group = null;
-        int port = -1;
-        int ttl = 1;
-
-        try {
-            group = InetAddress.getByName(args[1]);
-        } catch (Throwable e) {
-            System.err.println("Invalid IPv4 Multicat Address "
-                    + e.getMessage());
-            System.exit(1);
-        }
-
-        if (!group.isMulticastAddress()) {
-            System.err.println("Group: " + args[1]
-                    + " is not a valid IP multicast");
-            System.exit(1);
-        }
-
-        try {
-            port = Integer.parseInt(args[2]);
-        } catch (NumberFormatException e) {
-            System.err.println("Porto invalido: " + args[2]);
-            System.exit(1);
-        }
-
-        if (args.length >= 4) {
-            try {
-                ttl = Integer.parseInt(args[3]);
-            } catch (NumberFormatException e) {
-                System.err.println("TTL invalido: " + args[3]);
-                System.exit(1);
-            }
-        }
-
-        try {
-            MChatClient frame = new MChatClient();
-            frame.setSize(800, 300);
-            frame.setVisible(true);
-
-            frame.join(username, group, port, ttl);
-        } catch (Throwable e) {
-            System.err.println("Error starting frame: " + e.getClass().getName() + ": " + e.getMessage());
-            System.exit(1);
-        }
     }
 }

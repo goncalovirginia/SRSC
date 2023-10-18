@@ -8,6 +8,15 @@ import java.security.SecureRandom;
  * Utilitarios que estendem _1.1-UsingRSAandElGamal._1.2-UsingECC._1_1UsingRSAandElGamal._1_2UsingECC.Utils1 e _1.1-UsingRSAandElGamal._1.2-UsingECC._1_1UsingRSAandElGamal._1_2UsingECC.Utils2
  */
 public class Utils3 extends Utils2 {
+    /**
+     * Retorna um SecureRandom de teste com o mesmo valor...
+     *
+     * @return random fixo
+     */
+    public static SecureRandom createFixedRandom() {
+        return new FixedRand();
+    }
+
     private static class FixedRand extends SecureRandom {
         MessageDigest sha;
         byte[] state;
@@ -41,14 +50,5 @@ public class Utils3 extends Utils2 {
                 sha.update(state);
             }
         }
-    }
-
-    /**
-     * Retorna um SecureRandom de teste com o mesmo valor...
-     *
-     * @return random fixo
-     */
-    public static SecureRandom createFixedRandom() {
-        return new FixedRand();
     }
 }

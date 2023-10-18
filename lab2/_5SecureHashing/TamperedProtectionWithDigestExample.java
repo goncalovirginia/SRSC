@@ -10,9 +10,8 @@ import java.security.SecureRandom;
  * Message tampering - cifra com sintese, AES e modo CTR
  */
 public class TamperedProtectionWithDigestExample {
-    public static void main(
-            String[] args)
-            throws Exception {
+
+    public static void main(String[] args) throws Exception {
         SecureRandom random = new SecureRandom();
         IvParameterSpec ivSpec = Utils.createCtrIvForAES(1, random);
         Key key = Utils.createKeyForAES(256, random);
@@ -57,4 +56,5 @@ public class TamperedProtectionWithDigestExample {
 
         System.out.println("plain : " + Utils.toString(plainText, messageLength) + " verified: " + MessageDigest.isEqual(hash.digest(), messageHash));
     }
+
 }

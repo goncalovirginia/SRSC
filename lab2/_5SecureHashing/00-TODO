@@ -4,7 +4,7 @@ to provide INTEGRITY guarantees.
 Follow the Lab
 
 ====================================================================
-1. Analyze tthe code example: how to use Secure Hash Functions
+1. Analyze the code example: how to use Secure Hash Functions
    and how Secure Hash Algorithms can be used to protect Data or
    Messages INTEGRITY
    See classes: TamperedExample.java 
@@ -16,11 +16,11 @@ What ? Uhm... Is it something not expected ? How is it possible ?
 
 =====================================================================
 
-You will discuss more in the tehretical classes the security proerties
+You will discuss more in the theoretical classes the security properties
 that you can expect from Secure Hash Functions.
 
 Some secure Hash Functions are the following. Each hash functions is
-characterized by the fixed number of bits returing as digests:
+characterized by the fixed number of bits returning as digests:
 
 MD5: 128 bits   .... Very weak now !
 MD6: (until 512 bits)

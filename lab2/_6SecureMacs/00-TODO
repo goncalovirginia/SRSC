@@ -1,17 +1,17 @@
 TODO:
 
-This is only an introductory example about houw to use
-MAC Constructions (Message Authentciation Codes) in JAVA/JCE
+This is only an introductory example about how to use
+MAC Constructions (Message Authentication Codes) in JAVA/JCE
 
 MACs can be used as:
 HMACs - Hash-Based Macs
 CMACs - Cryptographic Macs
 
 HMACS are also known as "Keyed-Hash Methods" because the idea
-here is to use a MAC Key (k) that will be combined with the imput
+here is to use a MAC Key (k) that will be combined with the input
 to produce the MAC... So MAC Keys will be used as "secret" parameters
-to produze the MAC... So it can be verified by someone that laso
-nows the secret
+to produce the MAC... So it can be verified by someone that also
+knows the secret
 If you want tp compute MAC you will do something like:
 
 MAC(input) = Hash (input || key)
