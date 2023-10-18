@@ -1,21 +1,6 @@
 package _3Streaming.hjUDPproxy;
 
-/* hjUDPproxy, 20/Mar/18
- *
- * This is a very simple (transparent) UDP proxy
- * The proxy can listening on a remote source (server) UDP sender
- * and transparently forward received datagram packets in the
- * delivering endpoint
- *
- * Possible Remote listening endpoints:
- *    Unicast IP address and port: configurable in the file config.properties
- *    Multicast IP address and port: configurable in the code
- *
- * Possible local listening endpoints:
- *    Unicast IP address and port
- *    Multicast IP address and port
- *       Both configurable in the file config.properties
- */
+import _3Streaming.Crypto;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -28,7 +13,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-class hjUDPproxy {
+public class EncryptedUDPProxy {
+
     public static void main(String[] args) throws Exception {
         InputStream inputStream = new FileInputStream("lab2/_3Streaming/hjUDPproxy/config.properties");
         Properties properties = new Properties();
@@ -37,11 +23,11 @@ class hjUDPproxy {
         String destinations = properties.getProperty("localdelivery");
 
         SocketAddress inSocketAddress = parseSocketAddress(remote);
-        Set<SocketAddress> outSocketAddressSet = Arrays.stream(destinations.split(",")).map(s -> parseSocketAddress(s)).collect(Collectors.toSet());
+        Set<SocketAddress> outSocketAddressSet = Arrays.stream(destinations.split(",")).map(EncryptedUDPProxy::parseSocketAddress).collect(Collectors.toSet());
 
         DatagramSocket inSocket = new DatagramSocket(inSocketAddress);
         DatagramSocket outSocket = new DatagramSocket();
-        byte[] buffer = new byte[4 * 1024];
+        byte[] buffer = new byte[4096];
 
         while (true) {
             DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
@@ -49,7 +35,7 @@ class hjUDPproxy {
 
             System.out.print("*");
             for (SocketAddress outSocketAddress : outSocketAddressSet) {
-                outSocket.send(new DatagramPacket(buffer, inPacket.getLength(), outSocketAddress));
+                outSocket.send(new DatagramPacket(Crypto.decrypt(buffer), inPacket.getLength(), outSocketAddress));
             }
         }
     }
@@ -60,4 +46,5 @@ class hjUDPproxy {
         int port = Integer.parseInt(split[1]);
         return new InetSocketAddress(host, port);
     }
+
 }

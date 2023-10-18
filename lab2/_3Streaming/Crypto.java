@@ -1,4 +1,4 @@
-package fileTransfer;
+package _3Streaming;
 
 import encryptionDecryption.ex3.CryptoException;
 
@@ -16,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
 public class Crypto {
 
     private static final String ALGORITHM = "AES";
-    private static final String TRANSFORMATION = "AES/CTR/PKCS5Padding";
+    private static final String TRANSFORMATION = "AES/CTR/NoPadding";
     private static final String KEY = "keykeykeykeykeyk";
 
     private static final byte[] ivBytes = new byte[]{

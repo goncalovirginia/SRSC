@@ -1,8 +1,4 @@
-package _3Streaming.hjStreamServer;/*
- * hjStreamServer.java
- * Streaming server: streams video frames in UDP packets
- * for clients to play in real time the transmitted movies
- */
+package _3Streaming.hjStreamServer;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -10,7 +6,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 
-class hjStreamServer {
+import _3Streaming.Crypto;
+
+class EncryptedStreamServer {
 
     static public void main(String[] args) throws Exception {
         if (args.length != 3) {
@@ -37,13 +35,13 @@ class hjStreamServer {
             if (count == 0) q0 = time; // tempo de referencia no stream
             count += 1;
             g.readFully(buff, 0, size);
-            p.setData(buff, 0, size);
+            p.setData(Crypto.encrypt(buff), 0, size);
             p.setSocketAddress(addr);
             long t = System.nanoTime();
             Thread.sleep(Math.max(0, ((time - q0) - (t - t0)) / 1000000));
 
             // send packet (with a frame payload)
-            // Frames sent in clear (no encryption)
+            // Frames sent encrypted
             s.send(p);
             System.out.print(".");
         }
