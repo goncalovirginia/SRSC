@@ -12,7 +12,7 @@ import java.security.PrivateKey;
 
 public class ReadPrivateKeyFromKeystore {
     public static void main(String[] argv) throws Exception {
-        FileInputStream is = new FileInputStream("hj.jks");
+        FileInputStream is = new FileInputStream("lab3.1/lab3.1/_5KeystoresManipulation/Keystores_AsymCrypto/hj.jks");
 
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
         keystore.load(is, "hjhjhjhj".toCharArray());
@@ -20,10 +20,7 @@ public class ReadPrivateKeyFromKeystore {
         String alias = "hj";
 
         Key key = keystore.getKey(alias, "hjhjhjhj".toCharArray());
-        if (key instanceof PrivateKey) {
-
-            PrivateKey privatekey = (PrivateKey) key;
-
+        if (key instanceof PrivateKey privatekey) {
             System.out.println(privatekey.getAlgorithm());
             System.out.println(privatekey.getFormat());
             System.out.println(Utils1.toHex(privatekey.getEncoded()));

@@ -1,15 +1,19 @@
 package _1_1UsingRSAandElGamal;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import javax.crypto.Cipher;
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.SecureRandom;
+import java.security.*;
 
 /**
  * Basic _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA example.
  */
 public class RSA {
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     public static void main(
             String[] args)
             throws Exception {
@@ -22,31 +26,30 @@ public class RSA {
         // parameterizations (using standard patterns)
 
         // input w/ 5 bytes = 40 bits
-        byte[] input =
-                new byte[]{(byte) 0x12, (byte) 0x34, (byte) 0x56,
-                        (byte) 0x78, (byte) 0x78
-                };
+        //byte[] input =
+          //      new byte[]{(byte) 0x12, (byte) 0x34, (byte) 0x56,
+            //            (byte) 0x78, (byte) 0x78
+              //  };
 
         // Try with this input data  w/ 17 bytes = 136 bits
         // What can you observe ?
-        //  byte[] input =
-        //  new byte[] 
-        //  { 
-        //  (byte)0x12, (byte)0x34, (byte)0x56, (byte)0x78,
-        //  (byte)0x12, (byte)0x34, (byte)0x56, (byte)0x78,
-        //  (byte)0x12, (byte)0x34, (byte)0x56, (byte)0x78,
-        //  (byte)0x12, (byte)0x34, (byte)0x56, (byte)0x78
-        //  ,0x11 
-        //  };
+        byte[] input =
+        new byte[] {
+            (byte)0x12, (byte)0x34, (byte)0x56, (byte)0x78,
+            (byte)0x12, (byte)0x34, (byte)0x56, (byte)0x78,
+            (byte)0x12, (byte)0x34, (byte)0x56, (byte)0x78,
+            (byte)0x12, (byte)0x34, (byte)0x56, (byte)0x78,
+            (byte) 0x11
+        };
 
 
         System.out.println("Input: " + new String(input));
 
         // Cipher cipher = Cipher.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA/None/NoPadding", "BC");
-        Cipher cipher = Cipher.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA");
+        Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
 
         //  KeyPairGenerator g= KeyPairGenerator.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA", "BC");
-        KeyPairGenerator g = KeyPairGenerator.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA");
+        KeyPairGenerator g = KeyPairGenerator.getInstance("RSA", "BC");
 
         SecureRandom random = new SecureRandom();
 

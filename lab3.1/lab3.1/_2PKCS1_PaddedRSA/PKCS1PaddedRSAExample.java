@@ -1,15 +1,19 @@
 package _2PKCS1_PaddedRSA;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import javax.crypto.Cipher;
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.SecureRandom;
+import java.security.*;
 
 /**
  * Como usar _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA com oadding PKCS1
  */
 public class PKCS1PaddedRSAExample {
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     public static void main(
             String[] args)
             throws Exception {
@@ -20,7 +24,7 @@ public class PKCS1PaddedRSAExample {
         // or not. Remember the relevance of using Padding for _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA !!!
 
         //Cipher	         cipher = Cipher.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA/NONE/NoPadding");
-        Cipher cipher = Cipher.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA/NONE/PKCS1Padding");
+        Cipher cipher = Cipher.getInstance("RSA/NONE/PKCS1Padding");
 
         SecureRandom random = Utils3.createFixedRandom();
 
@@ -40,7 +44,7 @@ public class PKCS1PaddedRSAExample {
 
 
         // create the keys
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA");
+        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
 
         generator.initialize(512, random);
         // pode ensaiar com 128, 256, 512 1024, 2048, 4096, 8192 ... 

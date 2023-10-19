@@ -1,15 +1,19 @@
 package _4CostKeyGenerationRSA;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import javax.crypto.Cipher;
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.SecureRandom;
+import java.security.*;
 
 /**
  * Basic _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA example.
  */
 public class RandomKeyRSA {
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     public static void main(
             String[] args)
             throws Exception {
@@ -23,13 +27,13 @@ public class RandomKeyRSA {
                 // (byte)0x56, (byte)0x78 , (byte)0x56, (byte)0x78 ,
                 // (byte)0x56
         };
-        Cipher cipher = Cipher.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA/None/NoPadding", "BC");
+        Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
         // Cipher cipher = Cipher.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA/None/PKCS1Padding", "BC");
 
         SecureRandom random = Utils3.createFixedRandom();
 
         // Creation of keys (keypair)
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA", "BC");
+        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
         // generator.initialize(1024, random);
         // generator.initialize(2048, random);
         generator.initialize(4096, random);

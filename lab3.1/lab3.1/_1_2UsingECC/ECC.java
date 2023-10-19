@@ -11,13 +11,20 @@ package _1_2UsingECC;// Encryption using _1.2-UsingECC._1_2UsingECC.ECC
 // In fact, this is also best scheme for _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA encryption as well,
 // in creating somesort of "dynamic encrypted envelopes", most of the time.
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import javax.crypto.Cipher;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.spec.ECGenParameterSpec;
 
 public class ECC {
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     public static void main(String[] args) throws Exception {
 
@@ -25,7 +32,8 @@ public class ECC {
             // Input data to encrypt
             // (in this example given as the first argument)
 
-            byte[] input = args[0].getBytes();
+            String input = "Hello world";
+            byte[] inputBytes = input.getBytes();
 
             // or
             // byte[] input =
@@ -47,15 +55,15 @@ public class ECC {
 
             // System.out.println("Input: " + new String(input));
 
-            System.out.println("Input: " + new String(args[0]));
+            System.out.println("Input: " + input);
 
             //Cipher cipher=Cipher.getInstance("ECIES", "BC");
-            Cipher cipher = Cipher.getInstance("ECIES");
+            Cipher cipher = Cipher.getInstance("ECIES", "BC");
 
             // Uhm .. what is the Cryotographic ECIES instance ? Interesting !
 
-            //KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC", "BC");
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC");
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC", "BC");
+            //KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC");
 
             // What curves for _1.2-UsingECC._1_2UsingECC.ECC use ? Discussion ...
             // Have several ... ex., secp256k1 used currently in Bitcoin...
@@ -63,23 +71,22 @@ public class ECC {
             // Ongoing research: ex., https://safecurves.cr.yp.to
 
             // This curves for ex., are already supported in BC crypto providers
-            // ECGenParameterSpec ecSpec= new ECGenParameterSpec("secp384r1");
-            // ECGenParameterSpec ecSpec= new ECGenParameterSpec("secp256r1");
+            //ECGenParameterSpec ecSpec= new ECGenParameterSpec("secp384r1");
+            ECGenParameterSpec ecSpec = new ECGenParameterSpec("secp256r1");
 
             // Other curves available in other java-jce cryptoproviders
 
-            // ECGenParameterSpec ecSpec= new ECGenParameterSpec("secp192r1");
-            ECGenParameterSpec ecSpec = new ECGenParameterSpec("sect571k1");
-            // ECGenParameterSpec ecSpec= new ECGenParameterSpec("sect283k1");
-            //  ECGenParameterSpec ecSpec= new ECGenParameterSpec("secp256k1");
-            // ECGenParameterSpec ecSpec= new ECGenParameterSpec("sect233k1");
-
-            // ECGenParameterSpec ecSpec= new ECGenParameterSpec("sect409r1");
+            //ECGenParameterSpec ecSpec= new ECGenParameterSpec("secp192r1");
+            //ECGenParameterSpec ecSpec = new ECGenParameterSpec("sect571k1");
+            //ECGenParameterSpec ecSpec= new ECGenParameterSpec("sect283k1");
+            //ECGenParameterSpec ecSpec= new ECGenParameterSpec("secp256k1");
+            //ECGenParameterSpec ecSpec= new ECGenParameterSpec("sect233k1");
+            //ECGenParameterSpec ecSpec= new ECGenParameterSpec("sect409r1");
 
             // Other Curves in different cryptoproviders ...:
             // Curve25519, P384, Curve41417, Curve448-Goldilicks, M-511, P521
 
-            kpg.initialize(ecSpec, new SecureRandom());
+            kpg.initialize(ecSpec);
 
             // Generation of keypair for _1.2-UsingECC._1_2UsingECC.ECC (see from the theory)
 
@@ -89,7 +96,7 @@ public class ECC {
             // Encrypt (very similar as in _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA or ElGammal as you can see)
 
             cipher.init(Cipher.ENCRYPT_MODE, ecKeyPair.getPublic());
-            byte[] cipherText = cipher.doFinal(input);
+            byte[] cipherText = cipher.doFinal(inputBytes);
             System.out.println("Cipher: " + Utils3.toHex(cipherText));
             System.out.println("Len: " + cipherText.length + " Bytes");
 

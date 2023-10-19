@@ -14,7 +14,7 @@ import java.security.cert.Certificate;
 
 public class ReadPublicKeyFromKeystore {
     public static void main(String[] argv) throws Exception {
-        FileInputStream is = new FileInputStream("hj.jks");
+        FileInputStream is = new FileInputStream("lab3.1/lab3.1/_5KeystoresManipulation/Keystores_AsymCrypto/hj.jks");
 
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
         keystore.load(is, "hjhjhjhj".toCharArray());
@@ -22,8 +22,8 @@ public class ReadPublicKeyFromKeystore {
         String alias = "hj";
 
         Key key = keystore.getKey(alias, "hjhjhjhj".toCharArray());
-        if (key instanceof PrivateKey) {
 
+        if (key instanceof PrivateKey) {
             Certificate cert = keystore.getCertificate(alias);
             // Get now public key
             PublicKey publicKey = cert.getPublicKey();

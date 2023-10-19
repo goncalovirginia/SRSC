@@ -1,15 +1,19 @@
 package _1_1UsingRSAandElGamal;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import javax.crypto.Cipher;
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.SecureRandom;
+import java.security.*;
 
 /**
  * Basic _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA example.
  */
 public class ElGamal {
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     public static void main(
             String[] args)
             throws Exception {
@@ -44,10 +48,10 @@ public class ElGamal {
         //  };
 
 
-        System.out.println("Input: " + new String(Utils3.toHex(input)));
+        System.out.println("Input: " + Utils3.toHex(input));
 
         Cipher cipher = Cipher.getInstance("ELGamal/None/NoPadding", "BC");
-        KeyPairGenerator g = KeyPairGenerator.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.ElGamal", "BC");
+        KeyPairGenerator g = KeyPairGenerator.getInstance("ElGamal", "BC");
 
         SecureRandom random = new SecureRandom();
 
@@ -66,12 +70,12 @@ public class ElGamal {
 
         cipher.init(Cipher.ENCRYPT_MODE, pubKey, random);
         byte[] cipherText = cipher.doFinal(input);
-        System.out.println("cipher: " + new String(Utils3.toHex(cipherText)));
+        System.out.println("cipher: " + Utils3.toHex(cipherText));
 
         // Decrypt
 
         cipher.init(Cipher.DECRYPT_MODE, privKey);
         byte[] plainText = cipher.doFinal(cipherText);
-        System.out.println("plain : " + new String(Utils3.toHex(plainText)));
+        System.out.println("plain : " + Utils3.toHex(plainText));
     }
 }        

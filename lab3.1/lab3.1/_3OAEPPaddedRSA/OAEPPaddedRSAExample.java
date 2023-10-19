@@ -1,10 +1,9 @@
 package _3OAEPPaddedRSA;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import javax.crypto.Cipher;
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.SecureRandom;
+import java.security.*;
 
 /**
  * _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA com uso de OAEP Padding + geracao de chave aleatoria
@@ -19,6 +18,11 @@ import java.security.SecureRandom;
  */
 
 public class OAEPPaddedRSAExample {
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     public static void main(
             String[] args)
             throws Exception {
@@ -60,11 +64,11 @@ public class OAEPPaddedRSAExample {
 
         System.out.println("Input size: " + input.length);
 
-        Cipher cipher = Cipher.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA/NONE/OAEPWithSHA256AndMGF1Padding", "BC");
+        Cipher cipher = Cipher.getInstance("RSA/NONE/OAEPWithSHA256AndMGF1Padding", "BC");
         SecureRandom random = Utils3.createFixedRandom();
 
         // gerar chaves
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA", "BC");
+        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
 
         generator.initialize(2048, random);
 
@@ -81,8 +85,8 @@ public class OAEPPaddedRSAExample {
 
         byte[] cipherText = cipher.doFinal(input);
 
-        System.out.println("cipher: " + Utils3.toHex(cipherText) + "Size: " + cipherText.length);
-        System.out.println("Tamanho:" + cipherText.length);
+        System.out.println("cipher: " + Utils3.toHex(cipherText));
+        System.out.println("Length:" + cipherText.length);
 
         // Decifrar
 
@@ -91,6 +95,6 @@ public class OAEPPaddedRSAExample {
         byte[] plainText = cipher.doFinal(cipherText);
 
         System.out.println("plain : " + Utils3.toHex(plainText));
-        System.out.println("Tamanho:" + plainText.length);
+        System.out.println("Length:" + plainText.length);
     }
 }

@@ -14,7 +14,7 @@ to put the Public key in the public_key.pem
 openssl rsa -pubout -in private_key.pem -out public_key.pem
 
 
-Now we can view the key elemnts in private_key.pem
+Now we can view the key elements in private_key.pem
 -------------------------------------------------
 
 openssl rsa -text -in private_key.pem

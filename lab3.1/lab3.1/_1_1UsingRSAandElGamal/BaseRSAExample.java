@@ -1,8 +1,11 @@
 package _1_1UsingRSAandElGamal;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import javax.crypto.Cipher;
 import java.math.BigInteger;
 import java.security.KeyFactory;
+import java.security.Security;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAPrivateKeySpec;
@@ -12,9 +15,12 @@ import java.security.spec.RSAPublicKeySpec;
  * Basic _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA example.
  */
 public class BaseRSAExample {
-    public static void main(
-            String[] args)
-            throws Exception {
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
+    public static void main(String[] args) throws Exception {
         // We will observe the use of _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA to encrypt/decrypt
         // data w/ possibe different sizes and limits of
         // these sizes depending on the key-sizes from keypair
@@ -24,9 +30,7 @@ public class BaseRSAExample {
         // parameterizations (using standard patterns)
 
         // input w/ 5 bytes = 40 bits
-        byte[] input =
-                new byte[]{(byte) 0x12, (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0x78
-                };
+        byte[] input = new byte[] {(byte) 0x12, (byte) 0x34, (byte) 0x56, (byte) 0x78, (byte) 0x78};
 
         //new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
         //        (byte)0x00, (byte)0x09
@@ -44,13 +48,13 @@ public class BaseRSAExample {
         // (byte)0x78 ,0x11
         // };
 
-        Cipher cipher = Cipher.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA/None/NoPadding", "BC");
+        Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
         //Cipher cipher = Cipher.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA");
         // No padding parameterization. We will see this in next exercises.
         // WHat is th danger when we are not useing padded _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA use ?
 
         //KeyFactory keyFactory = KeyFactory.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA", "BC");
-        KeyFactory keyFactory = KeyFactory.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA");
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA", "BC");
 
         // Will use 128 bit keys (keypair: public,private)
         // expressed with mod and exponents (see _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA key generation
