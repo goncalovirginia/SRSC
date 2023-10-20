@@ -25,7 +25,7 @@ public class SecureMulticastChat extends Thread {
     protected MulticastSocket msocket;
 
     // Username / User-Nick-Name in Chat
-    protected String username;
+    protected static String username;
 
     // IP Multicast Group used
     protected InetAddress group;
@@ -38,7 +38,7 @@ public class SecureMulticastChat extends Thread {
 
     // Multicast Chat-Messaging
     public SecureMulticastChat(String username, InetAddress group, int port, int ttl, MulticastChatEventListener listener) throws IOException, CryptoException {
-        this.username = username;
+        SecureMulticastChat.username = username;
         this.group = group;
         this.listener = listener;
         isActive = true;

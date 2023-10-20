@@ -182,7 +182,7 @@ Phase 3: if you complete this phase correctly you can achieve until 18/20 points
 ----------------------------------------------------------------------------------
 This phase includes all the requirements from Phase 2 with the additional goals:
 
-The security format for mesages  will be now he following format:
+The security format for messages will be now he following format:
 
 MESSAGE = Control-Header  || ChatMessagePayload || SIGNATURE || MacProof
 
@@ -229,14 +229,14 @@ different algorithms tht will be used as digital signatures, according to proper
 Phase 4: what more ?  for 19/20  or 20/20 points
 ----------------------------------------------------------------------------------
 
-Can you design and implement a solution propossing an extended format for messages
+Can you design and implement a solution proposing an extended format for messages
 for the Chat Protocol over Multicasting in such a way that:
 
 - Don't need to have static pre- configuration file security.conf
-- Don't need to have static pre-configuration file pubickeys.conf
-- Because each message will pygybback additional information to be processed
+- Don't need to have static pre-configuration file publickeys.conf
+- Because each message will pyggyback additional information to be processed
   by receivers according to the intention of the sender
-- Can you have complete proofs for pree-authenticity of messages. How ?
+- Can you have complete proofs for pre-authenticity of messages. How ?
 
 Discuss your ideas with the professor ...
 
