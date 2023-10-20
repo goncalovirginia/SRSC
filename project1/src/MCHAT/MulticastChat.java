@@ -1,4 +1,6 @@
-package MCHAT;// MulticastChat.java
+package MCHAT;
+
+// MulticastChat.java
 // Represents the Multicast Chat/Messaging Protocol
 // As you can see, the used Multicast Communication Channel
 // is not secure .... Messages flow as plaintext messages
