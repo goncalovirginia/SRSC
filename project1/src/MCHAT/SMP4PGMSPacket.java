@@ -23,7 +23,7 @@ public class SMP4PGMSPacket {
 	
 	public SMP4PGMSPacket(byte[] data) throws CryptoException, NoSuchAlgorithmException, InvalidKeyException {
 		packet = new StringBuilder();
-		addControlHeader();
+		addHeader();
 		addPayload(data);
 		addMacProof(data);
 	}
@@ -54,12 +54,12 @@ public class SMP4PGMSPacket {
 		return packet.toString().getBytes();
 	}
 	
-	private void addControlHeader() throws NoSuchAlgorithmException {
+	private void addHeader() throws NoSuchAlgorithmException {
 		packet.append(PROTOCOL_VERSION);
 		packet.append(";");
 		packet.append(SecureMulticastChat.CHAT_MAGIC_NUMBER);
 		packet.append(";");
-		packet.append(new String(Integrity.hash(SecureMulticastChat.username.getBytes())));
+		packet.append(new String(base64Encoder.encode(Integrity.hash(SecureMulticastChat.username.getBytes()))));
 		packet.append("\n");
 	}
 	
@@ -87,12 +87,13 @@ public class SMP4PGMSPacket {
 		String[] headerParts = header.split(";");
 		int headerProtocolVersion = Integer.parseInt(headerParts[0]);
 		long headerMagicNumber = Long.parseLong(headerParts[1]);
-		String headerHashedUsername = headerParts[2];
+		String headerHashedUsername = new String(base64Decoder.decode(headerParts[2].getBytes()));
 		
 		DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(data));
 		dataInputStream.readLong();
 		dataInputStream.readInt();
-		String dataHashedUsername = new String(Integrity.hash(dataInputStream.readUTF().getBytes()));
+		String dataUsername = dataInputStream.readUTF();
+		String dataHashedUsername = new String(Integrity.hash(dataUsername.getBytes()));
 		
 		if (headerProtocolVersion != PROTOCOL_VERSION) {
 			throw new SMP4PGMSPacketException("Header: Incorrect protocol version.");
