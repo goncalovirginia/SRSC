@@ -1,10 +1,14 @@
 package MCHAT;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SMP4PGMSPacket {
 	
@@ -14,6 +18,8 @@ public class SMP4PGMSPacket {
 	
 	private static final Base64.Encoder base64Encoder = Base64.getEncoder();
 	private static final Base64.Decoder base64Decoder = Base64.getDecoder();
+	
+	private static final Set<String> receivedNonces = new HashSet<>();
 	
 	public SMP4PGMSPacket(byte[] data) throws CryptoException, NoSuchAlgorithmException, InvalidKeyException {
 		packet = new StringBuilder();
@@ -27,20 +33,19 @@ public class SMP4PGMSPacket {
 	 * @param packetBytes Received SMP4PGMSPacket bytes
 	 * @return SMP4PGMSPacket payload data
 	 */
-	public static byte[] receivePacket(byte[] packetBytes) throws SMP4PGMSPacketException, CryptoException {
+	public static byte[] receivePacket(byte[] packetBytes) throws SMP4PGMSPacketException, CryptoException, IOException, NoSuchAlgorithmException, InvalidKeyException {
 		String packetString = new String(packetBytes);
 		String[] packetParts = packetString.split("\n");
-
-		if (!(validateHeader(packetParts[0]) && validatePayload(packetParts[1]) && validateMacProof(packetParts[2]))) {
-			throw new SMP4PGMSPacketException("Invalid packet");
-		}
-		
 		String payload = packetParts[1];
 		String[] payloadParts = payload.split(";");
 		byte[] encryptedNonce = base64Decoder.decode(payloadParts[0].getBytes());
 		byte[] encryptedData = base64Decoder.decode(payloadParts[1].getBytes());
 		byte[] nonce = SymmetricCrypto.decrypt(encryptedNonce);
 		byte[] data = SymmetricCrypto.decrypt(encryptedData);
+
+		validateHeader(packetParts[0], data);
+		validatePayload(nonce, data);
+		validateMacProof(packetParts[2], data);
 		
 		return data;
 	}
@@ -74,24 +79,53 @@ public class SMP4PGMSPacket {
 	}
 	
 	private void addMacProof(byte[] data) throws NoSuchAlgorithmException, InvalidKeyException {
-		packet.append(new String(Base64.getEncoder().encode(Integrity.hmac(data))));
+		packet.append(new String(base64Encoder.encode(Integrity.hmac(data))));
 		packet.append("\n");
 	}
 
-	private static boolean validateHeader(String header) {
+	private static void validateHeader(String header, byte[] data) throws SMP4PGMSPacketException, IOException, NoSuchAlgorithmException {
 		String[] headerParts = header.split(";");
 		int headerProtocolVersion = Integer.parseInt(headerParts[0]);
 		long headerMagicNumber = Long.parseLong(headerParts[1]);
+		String headerHashedUsername = headerParts[2];
 		
-		return headerProtocolVersion == PROTOCOL_VERSION && headerMagicNumber == SecureMulticastChat.CHAT_MAGIC_NUMBER;
+		DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(data));
+		dataInputStream.readLong();
+		dataInputStream.readInt();
+		String dataHashedUsername = new String(Integrity.hash(dataInputStream.readUTF().getBytes()));
+		
+		if (headerProtocolVersion != PROTOCOL_VERSION) {
+			throw new SMP4PGMSPacketException("Header: Incorrect protocol version.");
+		}
+		if (headerMagicNumber != SecureMulticastChat.CHAT_MAGIC_NUMBER) {
+			throw new SMP4PGMSPacketException("Header: Incorrect chat magic number.");
+		}
+		if (!headerHashedUsername.equals(dataHashedUsername)) {
+			throw new SMP4PGMSPacketException("Header: Hashed username does not match.");
+		}
 	}
 
-	private static boolean validatePayload(String payload) {
-		return true;
+	private static void validatePayload(byte[] nonce, byte[] data) throws IOException, SMP4PGMSPacketException {
+		DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(data));
+		dataInputStream.readLong();
+		dataInputStream.readInt();
+		String username = dataInputStream.readUTF();
+		String nonceString = new String(nonce);
+		String key = username + nonceString;
+		
+		if (receivedNonces.contains(key)) {
+			throw new SMP4PGMSPacketException("Payload: Packet replaying detected.");
+		}
+		
+		receivedNonces.add(key);
 	}
 
-	private static boolean validateMacProof(String macProof) {
-		return true;
+	private static void validateMacProof(String macProof, byte[] data) throws SMP4PGMSPacketException, NoSuchAlgorithmException, InvalidKeyException {
+		String dataHMAC = new String(base64Encoder.encode(Integrity.hmac(data)));
+		
+		if (!macProof.equals(dataHMAC)) {
+			throw new SMP4PGMSPacketException("Mac Proof: Packet data has been tampered with.");
+		}
 	}
 
 }
