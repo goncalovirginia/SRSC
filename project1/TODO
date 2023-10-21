@@ -125,7 +125,7 @@ by all the valid or correct users, statically configured in a local file, known 
 correct users that can participate as valid users in the Chat.
 
 As you can see, the MAC proof can also be used as a non-replaynig guarantee if each receiver discards
-mssages with the same Macproof, with the same NONCES
+messages with the same Macproof, with the same NONCES
 
 The configuraton file for the phase 1, is a text file that only allows for the use of strict
 configurations, in the following format (you must know to interpret from the discussions and
@@ -147,7 +147,7 @@ Last challenges to complete phase 1:
 
 - Minimal changes in the code of MulticastClient. In fact we can expect NO CHANGES !
 - Minimal changes in the code of MulticastChatEventListener. In fact we expect NO CHANGES !
-- Minimal changs in our new implementation of SecureMulticastChat comparing with the initial MulticastChat
+- Minimal changes in our new implementation of SecureMulticastChat comparing with the initial MulticastChat
   Minimal is about max. 10 lines of Code (LoC) as reference. But the fewer lines of code modified,
   the better the solution and the quality of the modularity of the solution (which is obviously good from a security and auditability point of view). A good test is to compare with diff or cmp cmmands, to measure the minimal differences
   of your SecureMulticastChat comparing with initial MulticastChat

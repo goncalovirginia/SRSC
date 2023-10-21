@@ -3,6 +3,8 @@ package _1VerifyJCECriptoProvidersPolicy; /**
  * Henrique Domingos, 12/3/17
  **/
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import java.security.Provider;
 import java.security.Security;
 import java.util.HashSet;
@@ -10,6 +12,11 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class ListAlgorithms {
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     /**
      * Imprime set de entries - indentando um por linha, com o nome do set
      * nao indentado na primeira linha

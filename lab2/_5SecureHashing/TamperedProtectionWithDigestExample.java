@@ -17,20 +17,17 @@ public class TamperedProtectionWithDigestExample {
         Key key = Utils.createKeyForAES(256, random);
         Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
         String input = "Transfer 0000100 to AC 1234-5678";
-//        MessageDigest   hash = MessageDigest.getInstance("SHA256", "BC");
-//        MessageDigest   hash = MessageDigest.getInstance("SHA512", "BC");        
-//        MessageDigest   hash = MessageDigest.getInstance("SHA1", "BC");
+
         MessageDigest hash = MessageDigest.getInstance("SHA1");
         System.out.println("input : " + input);
 
         // Cifrar (Alice Correta)
-
         cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
-
         byte[] cipherText = new byte[cipher.getOutputSize(input.length() + hash.getDigestLength())];
 
         int ctLength = cipher.update(Utils.toByteArray(input), 0, input.length(), cipherText, 0);
 
+        // Input hash
         hash.update(Utils.toByteArray(input));
 
         ctLength += cipher.doFinal(hash.digest(), 0, hash.getDigestLength(), cipherText, ctLength);
@@ -49,6 +46,7 @@ public class TamperedProtectionWithDigestExample {
 
         byte[] plainText = cipher.doFinal(cipherText, 0, ctLength);
         int messageLength = plainText.length - hash.getDigestLength();
+
         hash.update(plainText, 0, messageLength);
 
         byte[] messageHash = new byte[hash.getDigestLength()];

@@ -35,7 +35,6 @@ public class TamperedEvenWithDigest {
         int ctLength = cipher.update(Utils.toByteArray(input), 0, input.length(), cipherText, 0);
 
         // Hash do input
-
         hash.update(Utils.toByteArray(input));
 
         ctLength += cipher.doFinal(hash.digest(), 0, hash.getDigestLength(), cipherText, ctLength);

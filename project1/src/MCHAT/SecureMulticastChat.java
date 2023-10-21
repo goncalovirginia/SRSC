@@ -49,6 +49,8 @@ public class SecureMulticastChat extends Thread {
         msocket.setTimeToLive(ttl);
         msocket.joinGroup(group);
 
+        SecurityConfig.readSecurityConfigFile();
+
         // start receive thread and send multicast join message
         start();
         sendJoin();

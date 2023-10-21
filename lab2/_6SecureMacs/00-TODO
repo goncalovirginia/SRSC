@@ -18,8 +18,8 @@ MAC(input) = Hash (input || key)
 
 or, more generically ....
 
-MAC(imput) = Hash [ T(input, key)]
-Here T will be a first transforation function parameterized by the
+MAC(input) = Hash [ T(input, key)]
+Here T will be a first transformation function parameterized by the
 secret key k.
 
 =============================================================
