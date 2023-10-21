@@ -5,7 +5,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
-import java.util.HexFormat;
 
 public class Integrity {
 
@@ -21,9 +20,9 @@ public class Integrity {
         return hash(SecurityConfig.HASH_ALGORITHM, data);
     }
 
-    public static byte[] hmac(String algorithm, String key, byte[] data) throws NoSuchAlgorithmException, InvalidKeyException {
+    public static byte[] hmac(String algorithm, byte[] key, byte[] data) throws NoSuchAlgorithmException, InvalidKeyException {
         Mac hMac = Mac.getInstance(algorithm);
-        Key hMacKey = new SecretKeySpec(HexFormat.of().parseHex(key), algorithm);
+        Key hMacKey = new SecretKeySpec(key, algorithm);
         hMac.init(hMacKey);
         return hMac.doFinal(data);
     }
