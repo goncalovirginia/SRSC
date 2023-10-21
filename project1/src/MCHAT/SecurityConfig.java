@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class SecurityConfig {
 
-    private static final String SECURITY_CONFIG_FILE = "security.conf";
+    private static final String SECURITY_CONFIG_FILE = "project1/security.conf";
     public static String SYMMETRIC_ALGORITHM, SYMMETRIC_KEY, HASH_ALGORITHM, MAC_ALGORITHM, MAC_KEY;
 
     public static void readSecurityConfigFile() throws IOException {

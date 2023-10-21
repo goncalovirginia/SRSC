@@ -2,6 +2,8 @@ package MCHAT;
 
 import java.io.*;
 import java.net.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 public class SecureMulticastChat extends Thread {
@@ -37,7 +39,7 @@ public class SecureMulticastChat extends Thread {
     protected boolean isActive;
 
     // Multicast Chat-Messaging
-    public SecureMulticastChat(String username, InetAddress group, int port, int ttl, MulticastChatEventListener listener) throws IOException, CryptoException {
+    public SecureMulticastChat(String username, InetAddress group, int port, int ttl, MulticastChatEventListener listener) throws IOException, CryptoException, NoSuchAlgorithmException, InvalidKeyException {
         SecureMulticastChat.username = username;
         this.group = group;
         this.listener = listener;
@@ -59,7 +61,7 @@ public class SecureMulticastChat extends Thread {
     /**
      * Sent notification when user wants to leave the Chat-messaging room
      */
-    public void terminate() throws IOException, CryptoException {
+    public void terminate() throws IOException, CryptoException, NoSuchAlgorithmException, InvalidKeyException {
         isActive = false;
         sendLeave();
     }
@@ -71,7 +73,7 @@ public class SecureMulticastChat extends Thread {
     }
 
     // Send a JOIN message
-    protected void sendJoin() throws IOException, CryptoException {
+    protected void sendJoin() throws IOException, CryptoException, NoSuchAlgorithmException, InvalidKeyException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream dataStream = new DataOutputStream(byteStream);
 
@@ -80,22 +82,22 @@ public class SecureMulticastChat extends Thread {
         dataStream.writeUTF(username);
         dataStream.close();
 
-        byte[] data = SymmetricCrypto.encrypt(byteStream.toByteArray());
+        byte[] data = new SMP4PGMSPacket(byteStream.toByteArray()).toByteArray();
         DatagramPacket packet = new DatagramPacket(data, data.length, group, msocket.getLocalPort());
         msocket.send(packet);
     }
 
     // Process received JOIN message
-    protected void processJoin(DataInputStream istream, InetAddress address, int port) throws IOException, CryptoException {
+    protected void processJoin(DataInputStream istream, InetAddress address, int port) throws IOException {
         String name = istream.readUTF();
-
+        
         try {
             listener.chatParticipantJoined(name, address, port);
         } catch (Throwable e) {}
     }
 
     // Send LEAVE
-    protected void sendLeave() throws IOException, CryptoException {
+    protected void sendLeave() throws IOException, CryptoException, NoSuchAlgorithmException, InvalidKeyException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream dataStream = new DataOutputStream(byteStream);
 
@@ -103,14 +105,14 @@ public class SecureMulticastChat extends Thread {
         dataStream.writeInt(LEAVE);
         dataStream.writeUTF(username);
         dataStream.close();
-
-        byte[] data = SymmetricCrypto.encrypt(byteStream.toByteArray());
+        
+        byte[] data = new SMP4PGMSPacket(byteStream.toByteArray()).toByteArray();
         DatagramPacket packet = new DatagramPacket(data, data.length, group, msocket.getLocalPort());
         msocket.send(packet);
     }
 
     // Processes a multicast chat LEAVE and notifies listeners
-    protected void processLeave(DataInputStream istream, InetAddress address, int port) throws IOException, CryptoException {
+    protected void processLeave(DataInputStream istream, InetAddress address, int port) throws IOException {
         String username = istream.readUTF();
 
         try {
@@ -120,7 +122,7 @@ public class SecureMulticastChat extends Thread {
 
     // Send message to the chat-messaging room
     //
-    public void sendMessage(String message) throws IOException, CryptoException {
+    public void sendMessage(String message) throws IOException, CryptoException, NoSuchAlgorithmException, InvalidKeyException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream dataStream = new DataOutputStream(byteStream);
 
@@ -129,8 +131,8 @@ public class SecureMulticastChat extends Thread {
         dataStream.writeUTF(username);
         dataStream.writeUTF(message);
         dataStream.close();
-
-        byte[] data = SymmetricCrypto.encrypt(byteStream.toByteArray());
+        
+        byte[] data = new SMP4PGMSPacket(byteStream.toByteArray()).toByteArray();
         DatagramPacket packet = new DatagramPacket(data, data.length, group, msocket.getLocalPort());
         msocket.send(packet);
     }
@@ -138,7 +140,7 @@ public class SecureMulticastChat extends Thread {
 
     // Process a received message  //
     //
-    protected void processMessage(DataInputStream istream, InetAddress address, int port) throws IOException, CryptoException {
+    protected void processMessage(DataInputStream istream, InetAddress address, int port) throws IOException {
         String username = istream.readUTF();
         String message = istream.readUTF();
 
@@ -162,8 +164,8 @@ public class SecureMulticastChat extends Thread {
                 msocket.receive(packet);
 
                 // Read received datagram
-                byte[] decryptedData = SymmetricCrypto.decrypt(new ByteArrayInputStream(packet.getData(), packet.getOffset(), packet.getLength()).readAllBytes());
-                DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(decryptedData));
+                byte[] data = SMP4PGMSPacket.receivePacket(new ByteArrayInputStream(packet.getData(), packet.getOffset(), packet.getLength()).readAllBytes());
+                DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(data));
 
                 long magic = dataInputStream.readLong();
 

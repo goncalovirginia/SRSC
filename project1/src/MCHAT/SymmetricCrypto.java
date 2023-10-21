@@ -39,6 +39,7 @@ public class SymmetricCrypto {
             return cipher.doFinal(content);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException
                  | IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
             throw new CryptoException(e.getMessage());
         }
     }

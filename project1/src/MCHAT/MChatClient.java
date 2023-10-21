@@ -8,6 +8,8 @@ import java.net.InetAddress;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 // Uses ... A swing based simple GUI interface ...
@@ -166,7 +168,7 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
 	
 	// Multicast address used for the chat-messagig room
 	public void join(String username, InetAddress group, int port, 
-					 int ttl) throws IOException, CryptoException {
+					 int ttl) throws IOException, CryptoException, NoSuchAlgorithmException, InvalidKeyException {
 		setTitle("CHAT MulticastIP " + username + "@" + group.getHostAddress() 
 				 + ":" + port + " [TTL=" + ttl + "]");
 

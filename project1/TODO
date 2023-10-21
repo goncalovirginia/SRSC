@@ -154,7 +154,7 @@ Last challenges to complete phase 1:
 
 - The solution must cover the security properties and countermeasures for the defined attack types (above).
 - It is very important to resist against message replaying
-- The solution must be used, running Multcast Client in the same way as in the orginal code
+- The solution must be used, running Multicast Client in the same way as in the original code
 
 
 ----------------------------------------------------------------------------------

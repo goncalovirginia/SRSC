@@ -12,6 +12,9 @@ public class SMP4PGMSPacket {
 	
 	private final StringBuilder packet;
 	
+	private static final Base64.Encoder base64Encoder = Base64.getEncoder();
+	private static final Base64.Decoder base64Decoder = Base64.getDecoder();
+	
 	public SMP4PGMSPacket(byte[] data) throws CryptoException, NoSuchAlgorithmException, InvalidKeyException {
 		packet = new StringBuilder();
 		addControlHeader();
@@ -20,20 +23,26 @@ public class SMP4PGMSPacket {
 	}
 
 	/**
-	 * Validates received SMP4PGMSPacket bytes and returns its payload data
+	 * Validates received SMP4PGMSPacket bytes and returns its decrypted payload data
 	 * @param packetBytes Received SMP4PGMSPacket bytes
 	 * @return SMP4PGMSPacket payload data
 	 */
-	public static byte[] receivePacket(byte[] packetBytes) throws SMP4PGMSPacketException {
+	public static byte[] receivePacket(byte[] packetBytes) throws SMP4PGMSPacketException, CryptoException {
 		String packetString = new String(packetBytes);
 		String[] packetParts = packetString.split("\n");
 
 		if (!(validateHeader(packetParts[0]) && validatePayload(packetParts[1]) && validateMacProof(packetParts[2]))) {
 			throw new SMP4PGMSPacketException("Invalid packet");
 		}
-
-		System.out.println(packetString);
-		return packetParts[1].getBytes();
+		
+		String payload = packetParts[1];
+		String[] payloadParts = payload.split(";");
+		byte[] encryptedNonce = base64Decoder.decode(payloadParts[0].getBytes());
+		byte[] encryptedData = base64Decoder.decode(payloadParts[1].getBytes());
+		byte[] nonce = SymmetricCrypto.decrypt(encryptedNonce);
+		byte[] data = SymmetricCrypto.decrypt(encryptedData);
+		
+		return data;
 	}
 	
 	public byte[] toByteArray() {
@@ -52,40 +61,29 @@ public class SMP4PGMSPacket {
 	private void addPayload(byte[] data) throws CryptoException {
 		byte[] random128Bits = new byte[16];
 		new SecureRandom().nextBytes(random128Bits);
-		String random128bitsBase64 = new String(Base64.getEncoder().encode(random128Bits));
+		byte[] random128BitsEncrypted = SymmetricCrypto.encrypt(random128Bits);
+		byte[] random128BitsEncryptedBase64 = base64Encoder.encode(random128BitsEncrypted);
 		
-		String payload = random128bitsBase64 + ";" + new String(data);
-		String encryptedPayload = new String(SymmetricCrypto.encrypt(payload.getBytes()));
+		byte[] dataEncrypted = SymmetricCrypto.encrypt(data);
+		byte[] dataEncryptedBase64 = base64Encoder.encode(dataEncrypted);
 		
-		packet.append(encryptedPayload);
+		String payload = new String(random128BitsEncryptedBase64) + ";" + new String(dataEncryptedBase64);
+		
+		packet.append(payload);
 		packet.append("\n");
 	}
 	
 	private void addMacProof(byte[] data) throws NoSuchAlgorithmException, InvalidKeyException {
 		packet.append(new String(Base64.getEncoder().encode(Integrity.hmac(data))));
-	}
-	
-	public static void main(String[] args) {
-		byte[] random128bit = new byte[16];
-		new SecureRandom().nextBytes(random128bit);
-
-		System.out.println(Arrays.toString(random128bit));
-		System.out.println(new String(new String(random128bit).getBytes()));
-
-		String base64 = new String(Base64.getEncoder().encode(random128bit));
-		System.out.println(base64);
-		System.out.println(Arrays.toString(Base64.getDecoder().decode(base64)));
+		packet.append("\n");
 	}
 
 	private static boolean validateHeader(String header) {
 		String[] headerParts = header.split(";");
 		int headerProtocolVersion = Integer.parseInt(headerParts[0]);
 		long headerMagicNumber = Long.parseLong(headerParts[1]);
-		String headerUsernameHash = headerParts[2];
-
-
-
-		return true;
+		
+		return headerProtocolVersion == PROTOCOL_VERSION && headerMagicNumber == SecureMulticastChat.CHAT_MAGIC_NUMBER;
 	}
 
 	private static boolean validatePayload(String payload) {
