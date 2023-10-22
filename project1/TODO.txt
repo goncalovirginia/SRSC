@@ -28,45 +28,48 @@ with initial provided implementation.
 In the required implementation, the Multicast Communication Channel will be a
 Secure Multicast Communication Channel, with security proprties as discussed in
 referece (Lectures) for the OSI X.800 Conceptual Security Framework, namely
-security properties, for resilience against the following attacks (considering an adversary model
-in which the attacker can target attack types against the communication at the network level, as
-defined in OSI X.800):
+security properties, for resilience against the following attacks (considering an adversary model in which the attacker can target attack types against the communication at the network level, as defined in OSI X.800).
+
+SMP4GMS Message Formats and required cryptographic processing  must be designed to address the following security properties:
 
 1. All messages in the Chat must be confidential (and can only be seen by
    valid users (and not by passive or active attackers in the communication channel)
+   This will provide connectionless message confidentiality guaratee
+   
 2. All messages in the Chat must be protected by integrity, and te correct users
    must be able to detect tampered messages, not processing possible tampered messages,
-   using Secure hash integrity arguments and/or Message athentication and integrity arguments
+   using Secure hash integrity arguments and/or Message athentication and integrity arguments.
+   This provides connectionless messge integrity and authenticity guaratees
+   
 3. The communication must have guarantees against Replaying Attacks, with correct users
    detecting and discarding any replayed message sent by a Man in the Middle attacker
+   This provides anti-replaying control guaratees
+   
 4. Peer-Authentication: All messages from users in the Chat must be digitally signed
    using Digital Signatures
+   This provides peer-authentication guarantees
 
 
-You will not consider in your adversary model DoS attacks (or threats against the availability
-of resources or the network) or attacks that can delete or droping messages flowing in the channel.
-In fact you will keep using UDP as teh base transport protocol, not dealing with reliability guarantees,
-only addressing security guarantees.
+You will not consider in the adversary model DoS attacks (or threats against the availability of resources or the network) or attacks that can delete or droping messages flowing in the channel.
+In fact you will keep using UDP/IP Multicast as the base transport and network protocols, not dealing with reliability guarantees and only addressing security guarantees, as
+defined above.
 
-You will not consider as hypothesis in the adversary model possible intrusion attacks against the machines and
-runtime support in software stack and resources internal to the correct user machines.
-This means that you consider that these aspects are in the Trust Computing Base Assumptions.
+You will not consider as hypothesis in the adversary model possible intrusion attacks against the machines and runtime support in software stack and resources internal to the correct user machines. This means that you consider that these aspects are in the Trust Computing Base Assumptions.
+
 You will also consider that the cryptographic algorithms and constructions you will use
-(with the related implemenntations in Java crypto provider libraries) are implemented correctly,
-to be used as trustable cryptography in your trust-computing base.
+(with the related implemenntations in Java crypto provider libraries) are implemented correctly, to be used as trustable cryptography in your trust-computing base.
 
-However, an attacker can use her/his machine instaling the software and try to use the Chat-Messaging system
-to send messages pretending to be an apparent correct user. However, the solution will give the
-guarantees for correct (permissioned) users to detect and discard participants that are not considered as
-valid users.
+However, an attacker can use her/his machine instaling the software and try to use the Chat-Messaging system to send messages pretending to be an apparent correct user (trying to impersonate valid users with spoofed identities, user identifiers or nicknames).
+However, the solution will give the guarantees for correct (permissioned) users to detect and discard participants that are not considered as "real" valid users.
 
 All messages (according to required message formats including control-headers and
 message payloads) must be sent/rceived using the following format as the
 encapsulation format. The format for exchanged messages in the SMP4PGMS protocol will
 evolve, according to the different phases of the protocol as explained below.
 
+=========================================
 GOALS AND PHASES FOR YOUR IMPLEMENTATION
-========================================
+=========================================
 
 ----------------------------------------------------------------------------------
 Phase 1: if you complete this phase correctly you can achieve until 12/20 points
@@ -87,13 +90,13 @@ Control Header
 --------------
 
 Control Header includes the following parts (field:)
-Control-Header = VERSION || CHAT_MAGIC_NUMBER || Hashed User Name
+Control-Header = VERSION || CHAT_MAGIC_NUMBER || Hashed UserID or Nick Name
 
-	       VERSION: a short integer expressing the protocol version, ex: 1,2,3 ... etc
-	          // This is expressed as plaintext information
-	       CHAT_MAGIC_NUMBER: the same as the CHAT_MAGIC_NUMBER as used in the unsecure version
-	          // This is expressed as plaintext information	       
-	       Hashed User Name: Hashed User name, w/ 256 bits, exprssed as SHA256(nichname)
+   VERSION: a short integer expressing the protocol version, ex: 1,2,3 ... etc
+          // This is expressed as plaintext information
+   CHAT_MAGIC_NUMBER: the same as the CHAT_MAGIC_NUMBER as used in the unsecure version
+          // This is expressed as plaintext information	       
+   Hashed User Name: Hashed User name, w/ 256 bits, exprssed as SHA256(nichname)
 	          // This is the transformation of the nickname of the sender using an Hash Function
 		  // As you can see below, the Hash function used is define in a configuration file
 		  // thet is pre-installed in all correct participants
@@ -108,31 +111,33 @@ a block cipher, with the neccessary parameterizations. The key and necessary par
 by all the valid or correct usersm and can be statically configured in a local file, known by all
 correct users that can participate as valid users in the Chat.
 
-The ChatMessagePaylod must hve the folloing parts:
-ChatMessagePaylaod = NONCE || PAYLOAD-MESSAGE-DATA
+The ChatMessagePayload must have the following parts:
+( SENDER_NAME || MSG_TYPE_TAG || NONCE || MSG_DATA )
 
+SENDER_NAME: is the UserId or Nick Name sending the message
+MSG_TYPE_TAG: type of message (as in original implementation)
+     Encodes types as join, leaave, normal message, ... 
 NONCE: is random number of 128 bits, pseudo randomly generated by the sender.
-       Receivers must use this NONCE together with the sender nickname, to discard any repalying
-       tentative
-PAYLOAD-MESSAGE-DATA: The message itself
+     Receivers must use this NONCE together with the sender nickname, to discard any farudulent repalying tentative
+MESSAGE-DATA: The message itself
+
+The ChatMessagePaylaod must be encrypted with symmetric cryptographic algorithms (block ciphers w/ operation modes and padding, or steram ciphers)
+
 
 MacProof
 ---------
 
-It is a MAC proof (message authentication, with implicit integrity), used as an HMAC construction
-in which a valid key must be used. Again, the MAC key and necessary parameters are pre-shared
-by all the valid or correct users, statically configured in a local file, known by all
-correct users that can participate as valid users in the Chat.
+It is a MAC proof (message authentication, with implicit integrity), used as an HMAC construction in which a valid key must be used. Again, the MAC key and necessary parameters are pre-shared by all the valid or correct users, statically configured in a local file, known by all correct users that can participate as valid users in the Chat.
 
-As you can see, the MAC proof can also be used as a non-replaynig guarantee if each receiver discards
-messages with the same Macproof, with the same NONCES
+As you can see, the MAC proof can also be used as a non-replaynig guarantee if each receiver discards mssages with the same Macproof, with the same NONCES
 
-The configuraton file for the phase 1, is a text file that only allows for the use of strict
-configurations, in the following format (you must know to interpret from the discussions and
+CONFIF FILES FOR PHASE 1:
+--------------------------
+The configuraton file for the phase 1, is a text file that only allows for the use of strict cryptographic configurations, in the following format (you must know to interpret from the discussions and
 exercices in Lab classes)
 
 FILE: security.conf
-Note: for phase 1, all correct participants (and only them) have the correct security.conf 
+Note: for phase 1, all correct participants (and only them) have the correct security.conf (pre-installed and pre-shared, with this out-of-scope of the solutio)
 -------------------------------------
 CONFIDENTIALITY: AES/GCM/NoPadding
 CONDIFENTIALITY-KEY: <a valid AES 256 bit key expressed in hexadecimal>
@@ -141,36 +146,44 @@ MACKEY <a MAC KEY with 256 bits, expressed in hexadecimal>
 MACALGORITHM: HMAC-SHA256 
 -------------------------------------
 
+users.conf
+It is a pre-installed and pre-shared file with a list of valid users and nicknames, previously obtained (out-of-scope of the solution):
 
+-------------------------------------
+alice
+bob
+carol
+...etc
+-------------------------------------
 
 Last challenges to complete phase 1:
+--------------------------------------
 
 - Minimal changes in the code of MulticastClient. In fact we can expect NO CHANGES !
 - Minimal changes in the code of MulticastChatEventListener. In fact we expect NO CHANGES !
-- Minimal changes in our new implementation of SecureMulticastChat comparing with the initial MulticastChat
-  Minimal is about max. 10 lines of Code (LoC) as reference. But the fewer lines of code modified,
-  the better the solution and the quality of the modularity of the solution (which is obviously good from a security and auditability point of view). A good test is to compare with diff or cmp cmmands, to measure the minimal differences
-  of your SecureMulticastChat comparing with initial MulticastChat
-
+- Minimal changes in the new implementation of SecureMulticastChat comparing with the initial MulticastChat
+  Minimal is about max. 10 lines of Code (LoC) as reference. But the fewer lines of code modified, the better the solution and the quality of the modularity of the solution (which is obviously good from a security and auditability point of view). A good test is to compare with diff or cmp cmmands, to measure the minimal differences of your SecureMulticastChat comparing with initial MulticastChat
 - The solution must cover the security properties and countermeasures for the defined attack types (above).
 - It is very important to resist against message replaying
-- The solution must be used, running Multicast Client in the same way as in the original code
+- The solution must be used, running Multcast Client in the same way as in the orginal code
 
 
-----------------------------------------------------------------------------------
-Phase 2: if you complete this phase correctly you can achieve until 14/20 points
-----------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+Phase 2: if you complete this phase correctly
+you can achieve until 14/20 points
+------------------------------------------------------------------------------
 
 This phase includes all the requirements from Phase 1 with the additional goals:
 
-The configuration file can express different definitions, including:
+The configuration file is statically pre-installed but can express different
+cryptographic definitions in flexible way, including:
 
 FILE: security.conf
 -------------------------------------
-CONFIDENTIALITY: AES/GCM/NoPadding or AES/CTR/NoPadding or AES/CBC/PKCS5Padding or Blowfish/CBC/PKCS5Padding
-                 or RC6/CCM/NoPadding or RC4 or CHACHA20
+CONFIDENTIALITY: AES/GCM/NoPadding or AES/CTR/NoPadding or AES/CBC/PKCS5Padding or Blowfish/CBC/PKCS5Padidng
+                 or RC6/CCM/NoPdding or RC4 or CHACHA-20
 CONDIFENTIALITY-KEY: <a valid key expressed in hexadecimal for any CONFIDENTIALITY configuration
-IV: < valid IV expressed in hexadecimal for any CONFIDENTILAITY configurations, except for stream cipers (RC4 or CHACHA-20)
+IV: < valid IV expressed in hexadecimal for any CONFIDENTILAITY configurations, except for stream cipers (RC4 or CHACHA-20
 HASHFORNICKNAMES: SHA256 or SHA384 or SHA512
 MACKEY <a MAC KEY with 256 bits, expressed in hexadecimal>
 MACALGORITHM: HMAC-SHA256 or HMAC-SHA384 or HMAC-SHA512 or 
@@ -182,11 +195,18 @@ Phase 3: if you complete this phase correctly you can achieve until 18/20 points
 ----------------------------------------------------------------------------------
 This phase includes all the requirements from Phase 2 with the additional goals:
 
-The security format for messages will be now he following format:
+The security format for mesages  will be now he following format:
 
-MESSAGE = Control-Header  || ChatMessagePayload || SIGNATURE || MacProof
+Plaintext Control Header:  VERSION || CHAT_MAGIC_NUMBER || Hash (sender name)
+SMP4GMS Encrypted Payload:
+Eks ( SENDER_NAME || MSG_TYPE_TAG || NONCE || MSG_DATA )
 
-the inclusion of the SIGNATURE field will provide guarantees for Peer-Authenticity of message senders.
+SIG:
+SignaturePrivateKeySender (Plaintext Control header || SENDER_NAME || MSG_TYPE_TAG || NONCE || MSG_DATA)
+
+HMAC Proof = HMACkm (Control Header || SIG || SMPGMS Encrypted Message )
+
+Note: the inclusion of the SIGNATURE field in phase 3 will provide guarantees for Peer-Authenticity of message senders.
 
 You configuration file in Phase 2, will include now the following configurations:
 
@@ -208,35 +228,39 @@ Now, you must have an additional configuration file (pre-instaled in all correct
 he public keys are pre-registered /you can do it manually). The format for this second configuration file
 is (supposing here user nicknames alice, bob and carol
 
+Now you must have nother confif file:
+
 File publickeys.conf
 --------------------------
 alice:hashednickname:alicepublickey:alg
 bob:hashednickname:bobpublickey:alg
 carol:hashednickname:carolpublicky:alg
 
-Example for the case of Alice entry:
-
 alice: nickname
 hahednickname: SHA256(alice) expressed in hexadecimal
-alicepublickey: ECCDSA - Elliptic curve public key for alice expressed in hexadecimal
+alicepublickey:ECCDSA - Elliptinc curce public key for alice experssed in hexadecimal
 alg: ECDSA
 
-Of course that users can have diffrent public keys and algorithms for demonstrations involving
-different algorithms tht will be used as digital signatures, according to proper configurations.
+Example for the case of Alice entry:
 
+alice:25AFB35675AF1298B51C8D56238715FA6524142F241254BF1CAAB5294A301323:25AFB35675AF1298B51C8D56238715FA6524142F241254BF1CAAB5294A301323:ECC
+
+Of course that differet users can have diffrent public keys and algorithms for demonstrations involving different algorithms that can be used as digital signatures, according to proper configurations and necessary signature validations of sent messages
 
 ----------------------------------------------------------------------------------
-Phase 4: what more ?  for 19/20  or 20/20 points
+Phase 4: for 19/20  or 20/20 points
 ----------------------------------------------------------------------------------
 
-Can you design and implement a solution proposing an extended format for messages
+Can you design and implement a solution propossing an extended format for messages
 for the Chat Protocol over Multicasting in such a way that:
 
 - Don't need to have static pre- configuration file security.conf
-- Don't need to have static pre-configuration file publickeys.conf
-- Because each message will pyggyback additional information to be processed
+- Don't need to have static pre-configuration file pubckeys.conf
+- Because each message will pygybback additional information to be processed
   by receivers according to the intention of the sender
-- Can you have complete proofs for pre-authenticity of messages. How ?
+- Can you have complete proofs for pree-authenticity of messages. How ?
+
+The idea is to design a solution for minimal setup.
 
 Discuss your ideas with the professor ...
 

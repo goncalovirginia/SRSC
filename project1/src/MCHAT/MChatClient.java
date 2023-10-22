@@ -1,25 +1,24 @@
-package MCHAT;
-
-// MChatClient.java
+package MCHAT;// MChatClient.java
 // Main Multicast Chat-Message tool
+// 
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import javax.swing.text.*;
 import java.util.*;
 
 // Uses ... A swing based simple GUI interface ...
 
-public class MChatClient extends JFrame implements MulticastChatEventListener {
-
+public class MChatClient extends JFrame implements MulticastChatEventListener
+{
 	// The "multicast chat" window
-	protected SecureMulticastChat chat;
+	protected MulticastChat chat;
 
 	// Txtarea in GUI for chatting/messaging or receiving events in the Chat "room"
+
 	protected JTextArea textArea;
 
 	// Area for message input
@@ -168,14 +167,14 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
 	
 	// Multicast address used for the chat-messagig room
 	public void join(String username, InetAddress group, int port, 
-					 int ttl) throws IOException, CryptoException, NoSuchAlgorithmException, InvalidKeyException {
+					 int ttl) throws IOException {
 		setTitle("CHAT MulticastIP " + username + "@" + group.getHostAddress() 
 				 + ":" + port + " [TTL=" + ttl + "]");
 
 
 		
 		// Creates a multicast session (as the chat-messaging room)
-		chat = new SecureMulticastChat(username, group, port, ttl, this);
+		chat = new MulticastChat(username, group, port, ttl, this);
 	} 
 
 	protected void log(final String message) {
@@ -193,7 +192,6 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
 	 */
 	protected void sendMessage() {
 		String message = messageField.getText();
-		if (message.isEmpty()) return;
 		messageField.setText("");
 		doSendMessage( message);
 		messageField.requestFocus();

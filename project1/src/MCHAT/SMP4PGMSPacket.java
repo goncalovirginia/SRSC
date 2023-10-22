@@ -18,8 +18,8 @@ public class SMP4PGMSPacket {
 	
 	private static final Base64.Encoder base64Encoder = Base64.getEncoder();
 	private static final Base64.Decoder base64Decoder = Base64.getDecoder();
-	
-	private static final Set<String> receivedNonces = new HashSet<>();
+
+	private static final Set<String> generatedNonces = new HashSet<>(), receivedUsernameNonces = new HashSet<>();
 	
 	public SMP4PGMSPacket(byte[] data) throws CryptoException, NoSuchAlgorithmException, InvalidKeyException {
 		packet = new StringBuilder();
@@ -65,10 +65,8 @@ public class SMP4PGMSPacket {
 	}
 	
 	private void addPayload(byte[] data) throws CryptoException {
-		byte[] random128Bits = new byte[16];
-		new SecureRandom().nextBytes(random128Bits);
-		byte[] random128BitsEncrypted = SymmetricCrypto.encrypt(random128Bits);
-		byte[] random128BitsEncryptedBase64 = base64Encoder.encode(random128BitsEncrypted);
+		byte[] nonce128BitsEncrypted = SymmetricCrypto.encrypt(generateNonce());
+		byte[] random128BitsEncryptedBase64 = base64Encoder.encode(nonce128BitsEncrypted);
 		
 		byte[] dataEncrypted = SymmetricCrypto.encrypt(data);
 		byte[] dataEncryptedBase64 = base64Encoder.encode(dataEncrypted);
@@ -119,11 +117,11 @@ public class SMP4PGMSPacket {
 		String nonceString = new String(nonce);
 		String key = username + nonceString;
 		
-		if (receivedNonces.contains(key)) {
+		if (receivedUsernameNonces.contains(key)) {
 			throw new SMP4PGMSPacketException("Payload: Packet replaying detected.");
 		}
 		
-		receivedNonces.add(key);
+		receivedUsernameNonces.add(key);
 	}
 
 	private static void validateMacProof(String macProof, byte[] data) throws SMP4PGMSPacketException, NoSuchAlgorithmException, InvalidKeyException {
@@ -132,6 +130,19 @@ public class SMP4PGMSPacket {
 		if (!macProof.equals(dataHMAC)) {
 			throw new SMP4PGMSPacketException("Mac Proof: Packet data has been tampered with.");
 		}
+	}
+
+	private static byte[] generateNonce() {
+		byte[] nonce128Bits = new byte[16];
+		String nonce128BitsString;
+
+		do {
+			new SecureRandom().nextBytes(nonce128Bits);
+			nonce128BitsString = new String(nonce128Bits);
+		} while (generatedNonces.contains(nonce128BitsString));
+
+		generatedNonces.add(nonce128BitsString);
+		return nonce128Bits;
 	}
 
 }
