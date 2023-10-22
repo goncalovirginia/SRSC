@@ -30,5 +30,9 @@ public class Integrity {
     public static byte[] hmac(byte[] data) throws NoSuchAlgorithmException, InvalidKeyException {
         return hmac(SecurityConfig.MAC_ALGORITHM, SecurityConfig.MAC_KEY, data);
     }
+    
+    public static byte[] signature() {
+        return new byte[] {1};
+    }
 
 }

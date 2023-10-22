@@ -218,7 +218,7 @@ Example for the case of Alice entry:
 
 alice: nickname
 hahednickname: SHA256(alice) expressed in hexadecimal
-alicepublickey:ECCDSA - Elliptinc curce public key for alice experssed in hexadecimal
+alicepublickey: ECCDSA - Elliptic curve public key for alice expressed in hexadecimal
 alg: ECDSA
 
 Of course that users can have diffrent public keys and algorithms for demonstrations involving
