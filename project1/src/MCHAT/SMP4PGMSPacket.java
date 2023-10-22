@@ -25,6 +25,7 @@ public class SMP4PGMSPacket {
 		packet = new StringBuilder();
 		addHeader();
 		addPayload(data);
+		addSignature();
 		addMacProof(data);
 	}
 
@@ -76,6 +77,10 @@ public class SMP4PGMSPacket {
 		
 		packet.append(payload);
 		packet.append("\n");
+	}
+	
+	private void addSignature() {
+	
 	}
 	
 	private void addMacProof(byte[] data) throws NoSuchAlgorithmException, InvalidKeyException {

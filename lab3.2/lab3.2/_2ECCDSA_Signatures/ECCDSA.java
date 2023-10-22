@@ -2,10 +2,9 @@ package _2ECCDSA_Signatures;
 // Seguranca de Sistemas e Redes de Computadores
 // 20017/2018, hj@fct.unl.pt
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.SecureRandom;
-import java.security.Signature;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import java.security.*;
 import java.security.spec.ECGenParameterSpec;
 
 /**
@@ -13,11 +12,16 @@ import java.security.spec.ECGenParameterSpec;
  * com _1.2-UsingECC._1_2UsingECC.ECC DSA
  */
 public class ECCDSA {
+    
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+    
     public static void main(
             String[] args)
             throws Exception {
 
-        byte[] message = "important msg to sign with _1.2-UsingECC._1_2UsingECC.ECC/DSA".getBytes();
+        byte[] message = "important msg to sign with ECC/DSA".getBytes();
 
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDSA", "BC");
 

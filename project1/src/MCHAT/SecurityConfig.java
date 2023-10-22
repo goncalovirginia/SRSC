@@ -13,6 +13,8 @@ public class SecurityConfig {
     public static String SYMMETRIC_ALGORITHM, HASH_ALGORITHM, MAC_ALGORITHM, SIGNATURE_ALGORITHM;
     public static byte[] SYMMETRIC_KEY, IV, MAC_KEY;
     
+    public static final String ELLIPTIC_CURVE_ALGORITHM = "secp256r1";
+    
     public static final Map<String, String[]> publicKeys = new HashMap<>();
 
     public static void init() throws IOException {

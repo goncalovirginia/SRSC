@@ -5,6 +5,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
+import java.security.spec.ECGenParameterSpec;
 
 public class Integrity {
 
@@ -31,8 +32,17 @@ public class Integrity {
         return hmac(SecurityConfig.MAC_ALGORITHM, SecurityConfig.MAC_KEY, data);
     }
     
-    public static byte[] signature() {
-        return new byte[] {1};
+    public static byte[] signature(byte[] data) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException {
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDSA");
+        ECGenParameterSpec ecSpec = new ECGenParameterSpec(SecurityConfig.ELLIPTIC_CURVE_ALGORITHM);
+        kpg.initialize(ecSpec, new SecureRandom());
+        KeyPair keyPair = kpg.generateKeyPair();
+        
+        Signature signature = Signature.getInstance(SecurityConfig.SIGNATURE_ALGORITHM);
+        signature.initSign(keyPair.getPrivate(), new SecureRandom());
+        signature.update(data);
+        
+        return signature.sign();
     }
 
 }
