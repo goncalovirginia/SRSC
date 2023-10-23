@@ -6,6 +6,8 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
+import java.util.Base64;
+import java.util.HexFormat;
 
 public class Integrity {
 
@@ -32,17 +34,27 @@ public class Integrity {
         return hmac(SecurityConfig.MAC_ALGORITHM, SecurityConfig.MAC_KEY, data);
     }
 
-    public static byte[] signature(byte[] data) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException {
+    private static KeyPair generateKeyPair() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDSA");
         ECGenParameterSpec ecSpec = new ECGenParameterSpec(SecurityConfig.ELLIPTIC_CURVE_ALGORITHM);
         kpg.initialize(ecSpec, new SecureRandom());
-        KeyPair keyPair = kpg.generateKeyPair();
+        return kpg.generateKeyPair();
+    }
 
+    public static byte[] sign(byte[] data) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException {
+        KeyPair keyPair = generateKeyPair();
         Signature signature = Signature.getInstance(SecurityConfig.SIGNATURE_ALGORITHM);
         signature.initSign(keyPair.getPrivate(), new SecureRandom());
         signature.update(data);
-
         return signature.sign();
+    }
+
+    public static void main(String[] args) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+        KeyPair keyPair = generateKeyPair();
+        System.out.println(keyPair.getPrivate().getFormat());
+        System.out.println(HexFormat.of().formatHex(keyPair.getPrivate().getEncoded()));
+        System.out.println(keyPair.getPublic().getFormat());
+        System.out.println(HexFormat.of().formatHex(keyPair.getPublic().getEncoded()));
     }
 
 }
