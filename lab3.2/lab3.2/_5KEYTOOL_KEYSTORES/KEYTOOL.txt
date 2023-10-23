@@ -1,4 +1,4 @@
-#Criar um par de chaves _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA de 2048 bits e guardar numa keystore na entry hj
+#Criar um par de chaves RSA de 2048 bits e guardar numa keystore na entry hj
 
 keytool -genkey -alias hj -keyalg _1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA -keystore hj.jks -keysize 2048 -storepass hjhjhjhj
 

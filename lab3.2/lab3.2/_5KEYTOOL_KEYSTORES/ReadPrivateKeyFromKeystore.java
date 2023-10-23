@@ -12,7 +12,7 @@ import java.security.PrivateKey;
 
 public class ReadPrivateKeyFromKeystore {
     public static void main(String[] argv) throws Exception {
-        FileInputStream is = new FileInputStream("hj.jks");
+        FileInputStream is = new FileInputStream("lab3.2/lab3.2/_5KEYTOOL_KEYSTORES/hj.jks");
 
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
         keystore.load(is, "hjhjhjhj".toCharArray());

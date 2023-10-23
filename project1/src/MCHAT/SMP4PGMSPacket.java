@@ -45,12 +45,20 @@ public class SMP4PGMSPacket {
         byte[] data = base64Decoder.decode(payloadParts[3].getBytes());
 
         validateHeader(packetParts[0], username);
+        validateSignature(packetParts[1], username);
         validatePayload(nonce, data);
         validateMacProof(packetParts[3], packetString);
 
         return data;
     }
-
+    
+    private static void validateSignature(String signature, String username) {
+        String publicKey = SecurityConfig.publicKeys.get(username)[2];
+        
+        
+        throw new SMP4PGMSPacketException("Signature: Invalid signature.");
+    }
+    
     private static void validateHeader(String header, String payloadUsername) throws SMP4PGMSPacketException, IOException, NoSuchAlgorithmException {
         String[] headerParts = header.split(";");
         int headerProtocolVersion = Integer.parseInt(headerParts[0]);

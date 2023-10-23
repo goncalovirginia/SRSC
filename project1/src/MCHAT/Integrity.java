@@ -1,5 +1,6 @@
 package MCHAT;
 
+import _2ECCDSA_Signatures.Utils3;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Mac;
@@ -47,6 +48,15 @@ public class Integrity {
         signature.initSign(keyPair.getPrivate(), new SecureRandom());
         signature.update(data);
         return signature.sign();
+    }
+    
+    public static boolean validateSignature(byte[] message, byte[] signatureBytes, String username) throws NoSuchAlgorithmException, SignatureException {
+        String publicKey = SecurityConfig.publicKeys.get(username)[2];
+        Signature signature = Signature.getInstance(SecurityConfig.SIGNATURE_ALGORITHM);
+        signature.initVerify(publicKey);
+        signature.update(message);
+        
+        return signature.verify(signatureBytes);
     }
 
     public static void main(String[] args) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
