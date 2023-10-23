@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,11 +19,13 @@ public class SMP4PGMSPacket {
     private static final Base64.Decoder base64Decoder = Base64.getDecoder();
     private static final Set<String> generatedNonces = new HashSet<>(), receivedUsernameNonces = new HashSet<>();
     private final StringBuilder packet;
+    private byte[] nonce;
 
-    public SMP4PGMSPacket(byte[] data, int opCode) throws CryptoException, NoSuchAlgorithmException, InvalidKeyException {
+    public SMP4PGMSPacket(byte[] data, int opCode) throws CryptoException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
         packet = new StringBuilder();
+        nonce = generateNonce(NONCE_NUM_BYTES);
         addHeader();
-        addSignature();
+        addSignature(data, opCode);
         addPayload(data, opCode);
         addMacProof();
     }
@@ -32,7 +36,7 @@ public class SMP4PGMSPacket {
      * @param packetBytes Received SMP4PGMSPacket bytes
      * @return SMP4PGMSPacket payload data
      */
-    public static byte[] receivePacket(byte[] packetBytes) throws SMP4PGMSPacketException, CryptoException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public static byte[] receivePacket(byte[] packetBytes) throws SMP4PGMSPacketException, CryptoException, IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
         String packetString = new String(packetBytes);
         String[] packetParts = packetString.split("\n");
 
@@ -45,18 +49,12 @@ public class SMP4PGMSPacket {
         byte[] data = base64Decoder.decode(payloadParts[3].getBytes());
 
         validateHeader(packetParts[0], username);
-        validateSignature(packetParts[1], username);
+        String headerUsernameOpcodeNonceData = packetParts[0] + username + opCode + new String(nonce) + new String(data);
+        validateSignature(headerUsernameOpcodeNonceData, packetParts[1], username);
         validatePayload(nonce, data);
         validateMacProof(packetParts[3], packetString);
 
         return data;
-    }
-    
-    private static void validateSignature(String signature, String username) {
-        String publicKey = SecurityConfig.publicKeys.get(username)[2];
-        
-        
-        throw new SMP4PGMSPacketException("Signature: Invalid signature.");
     }
     
     private static void validateHeader(String header, String payloadUsername) throws SMP4PGMSPacketException, IOException, NoSuchAlgorithmException {
@@ -77,6 +75,12 @@ public class SMP4PGMSPacket {
         }
         if (!headerUsernameHashed.equals(payloadUsernameHashed)) {
             throw new SMP4PGMSPacketException("Header: Hashed username does not match.");
+        }
+    }
+
+    private static void validateSignature(String message, String signature, String username) throws SMP4PGMSPacketException, NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, InvalidKeyException {
+        if (!Integrity.validateSignature(message.getBytes(), base64Decoder.decode(signature.getBytes()), username)) {
+            throw new SMP4PGMSPacketException("Signature: Invalid signature.");
         }
     }
 
@@ -132,7 +136,7 @@ public class SMP4PGMSPacket {
     }
 
     private void addPayload(byte[] data, int opCode) throws CryptoException {
-        byte[] nonceBase64 = base64Encoder.encode(generateNonce(NONCE_NUM_BYTES));
+        byte[] nonceBase64 = base64Encoder.encode(nonce);
         byte[] dataBase64 = base64Encoder.encode(data);
 
         String payload = SecureMulticastChat.username + ";" + opCode + ";" + new String(nonceBase64) + ";" + new String(dataBase64);
@@ -143,8 +147,11 @@ public class SMP4PGMSPacket {
         packet.append("\n");
     }
 
-    private void addSignature() {
-        packet.append("signature");
+    private void addSignature(byte[] data, int opCode) throws NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, InvalidKeyException {
+        String headerUsernameOpcodeNonceData = packet.toString().split("\n")[0] + SecureMulticastChat.username + opCode + new String(nonce) + new String(data);
+        byte[] signature = Integrity.sign(headerUsernameOpcodeNonceData.getBytes());
+
+        packet.append(new String(base64Encoder.encode(signature)));
         packet.append("\n");
     }
 

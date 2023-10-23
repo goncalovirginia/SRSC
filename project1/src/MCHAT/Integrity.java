@@ -8,6 +8,9 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.HexFormat;
 
@@ -43,20 +46,19 @@ public class Integrity {
         return kpg.generateKeyPair();
     }
 
-    public static byte[] sign(byte[] data) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException {
-        KeyPair keyPair = generateKeyPair();
+    public static byte[] sign(byte[] data) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
+        PrivateKey privateKey = getPrivateKey();
         Signature signature = Signature.getInstance(SecurityConfig.SIGNATURE_ALGORITHM);
-        signature.initSign(keyPair.getPrivate(), new SecureRandom());
+        signature.initSign(privateKey, new SecureRandom());
         signature.update(data);
         return signature.sign();
     }
     
-    public static boolean validateSignature(byte[] message, byte[] signatureBytes, String username) throws NoSuchAlgorithmException, SignatureException {
-        String publicKey = SecurityConfig.publicKeys.get(username)[2];
+    public static boolean validateSignature(byte[] message, byte[] signatureBytes, String username) throws NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, InvalidKeyException {
+        PublicKey publicKey = getPublicKey(username);
         Signature signature = Signature.getInstance(SecurityConfig.SIGNATURE_ALGORITHM);
-        signature.initVerify();
+        signature.initVerify(publicKey);
         signature.update(message);
-        
         return signature.verify(signatureBytes);
     }
 
@@ -66,6 +68,22 @@ public class Integrity {
         System.out.println(HexFormat.of().formatHex(keyPair.getPrivate().getEncoded()));
         System.out.println(keyPair.getPublic().getFormat());
         System.out.println(HexFormat.of().formatHex(keyPair.getPublic().getEncoded()));
+    }
+
+    private static PublicKey getPublicKey(String username) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        String publicKeyHex = SecurityConfig.publicKeys.get(username)[1];
+        byte[] byteKey = HexFormat.of().parseHex(publicKeyHex);
+        X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey);
+        KeyFactory kf = KeyFactory.getInstance("ECDSA");
+        return kf.generatePublic(X509publicKey);
+    }
+
+    private static PrivateKey getPrivateKey() throws InvalidKeySpecException, NoSuchAlgorithmException {
+        String publicKeyHex = SecurityConfig.PRIVATE_KEY;
+        byte[] byteKey = HexFormat.of().parseHex(publicKeyHex);
+        PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(byteKey);
+        KeyFactory kf = KeyFactory.getInstance("ECDSA");
+        return kf.generatePrivate(pkcs8EncodedKeySpec);
     }
 
 }

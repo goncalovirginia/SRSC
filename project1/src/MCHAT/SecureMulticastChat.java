@@ -13,6 +13,8 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 
 public class SecureMulticastChat extends Thread {
@@ -50,9 +52,9 @@ public class SecureMulticastChat extends Thread {
 
     // Multicast Chat-Messaging
     public SecureMulticastChat(String username, InetAddress group, int port,
-                               int ttl, MulticastChatEventListener listener) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException {
+                               int ttl, MulticastChatEventListener listener) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
 
-        this.username = username;
+        SecureMulticastChat.username = username;
         this.group = group;
         this.listener = listener;
         isActive = true;
@@ -75,7 +77,7 @@ public class SecureMulticastChat extends Thread {
      * Sent notification when user wants to leave the Chat-messaging room
      */
 
-    public void terminate() throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException {
+    public void terminate() throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
         isActive = false;
         sendLeave();
     }
@@ -88,7 +90,7 @@ public class SecureMulticastChat extends Thread {
 
     // Send a JOIN message
     //
-    protected void sendJoin() throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException {
+    protected void sendJoin() throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream dataStream = new DataOutputStream(byteStream);
 
@@ -116,7 +118,7 @@ public class SecureMulticastChat extends Thread {
     }
 
     // Send LEAVE
-    protected void sendLeave() throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException {
+    protected void sendLeave() throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream dataStream = new DataOutputStream(byteStream);
 
@@ -145,7 +147,7 @@ public class SecureMulticastChat extends Thread {
 
     // Send message to the chat-messaging room
     //
-    public void sendMessage(String message) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException {
+    public void sendMessage(String message) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream dataStream = new DataOutputStream(byteStream);
 

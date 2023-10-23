@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -232,7 +234,7 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
 
     // Multicast address used for the chat-messagig room
     public void join(String username, InetAddress group, int port,
-                     int ttl) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException {
+                     int ttl) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
         setTitle("CHAT MulticastIP " + username + "@" + group.getHostAddress()
                 + ":" + port + " [TTL=" + ttl + "]");
 

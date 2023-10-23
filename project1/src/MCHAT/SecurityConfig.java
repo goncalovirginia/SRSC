@@ -15,6 +15,7 @@ public class SecurityConfig {
     private static final String PUBLICKEYS_CONFIG_FILE = "project1/publickeys.conf";
     public static String SYMMETRIC_ALGORITHM, HASH_ALGORITHM, MAC_ALGORITHM, SIGNATURE_ALGORITHM;
     public static byte[] SYMMETRIC_KEY, IV, MAC_KEY;
+    public static String PRIVATE_KEY;
 
     public static void init() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(SECURITY_CONFIG_FILE));
@@ -36,6 +37,9 @@ public class SecurityConfig {
             String[] lineParts = line.split(":");
             publicKeys.put(lineParts[0], new String[]{lineParts[1], lineParts[2], lineParts[3]});
         }
+
+        br = new BufferedReader(new FileReader("project1/" + SecureMulticastChat.username + ".privatekey"));
+        PRIVATE_KEY = br.readLine();
     }
 
 }
