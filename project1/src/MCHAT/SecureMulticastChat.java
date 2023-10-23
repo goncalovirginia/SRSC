@@ -1,10 +1,19 @@
-package MCHAT;
+package MCHAT;// SecureMulticastChat.java
+// Represents the Multicast Chat/Messaging Protocol
+// As you can see, the used Multicast Communication Channel
+// is not secure .... Messages flow as plaintext messages
+// You can see that if an adversary inspects traffic w/ a tool such as Wireshark,
+// she/he know everything the users are saying in the Chat ...
+// Also ... she/he can also operate as a Man In The Middle .... and it is easy
+// for her/him to cheat/fool the users
 
 import java.io.*;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Date;
 
 public class SecureMulticastChat extends Thread {
 
@@ -29,23 +38,27 @@ public class SecureMulticastChat extends Thread {
     // Username / User-Nick-Name in Chat
     protected static String username;
 
-    // IP Multicast Group used
+    // Grupo IP Multicast used
     protected InetAddress group;
 
     // Listener for Multicast events that must be processed
     protected MulticastChatEventListener listener;
 
     // Control  - execution thread
+
     protected boolean isActive;
 
     // Multicast Chat-Messaging
-    public SecureMulticastChat(String username, InetAddress group, int port, int ttl, MulticastChatEventListener listener) throws IOException, CryptoException, NoSuchAlgorithmException, InvalidKeyException {
-        SecureMulticastChat.username = username;
+    public SecureMulticastChat(String username, InetAddress group, int port,
+                               int ttl, MulticastChatEventListener listener) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException {
+
+        this.username = username;
         this.group = group;
         this.listener = listener;
         isActive = true;
 
         // create & configure multicast socket
+
         msocket = new MulticastSocket(port);
         msocket.setSoTimeout(DEFAULT_SOCKET_TIMEOUT_MILLIS);
         msocket.setTimeToLive(ttl);
@@ -61,19 +74,21 @@ public class SecureMulticastChat extends Thread {
     /**
      * Sent notification when user wants to leave the Chat-messaging room
      */
-    public void terminate() throws IOException, CryptoException, NoSuchAlgorithmException, InvalidKeyException {
+
+    public void terminate() throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException {
         isActive = false;
         sendLeave();
     }
 
     // to process error message
     protected void error(String message) {
-        System.err.println(new Date() + ": MulticastChat: "
+        System.err.println(new Date() + ": SecureMulticastChat: "
                 + message);
     }
 
     // Send a JOIN message
-    protected void sendJoin() throws IOException, CryptoException, NoSuchAlgorithmException, InvalidKeyException {
+    //
+    protected void sendJoin() throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream dataStream = new DataOutputStream(byteStream);
 
@@ -82,22 +97,26 @@ public class SecureMulticastChat extends Thread {
         dataStream.writeUTF(username);
         dataStream.close();
 
-        byte[] data = new SMP4PGMSPacket(byteStream.toByteArray()).toByteArray();
-        DatagramPacket packet = new DatagramPacket(data, data.length, group, msocket.getLocalPort());
+        byte[] data = new SMP4PGMSPacket(byteStream.toByteArray(), JOIN).toByteArray();
+        DatagramPacket packet = new DatagramPacket(data, data.length, group,
+                msocket.getLocalPort());
         msocket.send(packet);
     }
 
-    // Process received JOIN message
-    protected void processJoin(DataInputStream istream, InetAddress address, int port) throws IOException {
+    // Process recived JOIN message
+    //
+    protected void processJoin(DataInputStream istream, InetAddress address,
+                               int port) throws IOException {
         String name = istream.readUTF();
-        
+
         try {
             listener.chatParticipantJoined(name, address, port);
-        } catch (Throwable e) {}
+        } catch (Throwable e) {
+        }
     }
 
     // Send LEAVE
-    protected void sendLeave() throws IOException, CryptoException, NoSuchAlgorithmException, InvalidKeyException {
+    protected void sendLeave() throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream dataStream = new DataOutputStream(byteStream);
 
@@ -105,24 +124,28 @@ public class SecureMulticastChat extends Thread {
         dataStream.writeInt(LEAVE);
         dataStream.writeUTF(username);
         dataStream.close();
-        
-        byte[] data = new SMP4PGMSPacket(byteStream.toByteArray()).toByteArray();
-        DatagramPacket packet = new DatagramPacket(data, data.length, group, msocket.getLocalPort());
+
+        byte[] data = new SMP4PGMSPacket(byteStream.toByteArray(), LEAVE).toByteArray();
+        DatagramPacket packet = new DatagramPacket(data, data.length, group,
+                msocket.getLocalPort());
         msocket.send(packet);
     }
 
     // Processes a multicast chat LEAVE and notifies listeners
-    protected void processLeave(DataInputStream istream, InetAddress address, int port) throws IOException {
+
+    protected void processLeave(DataInputStream istream, InetAddress address,
+                                int port) throws IOException {
         String username = istream.readUTF();
 
         try {
             listener.chatParticipantLeft(username, address, port);
-        } catch (Throwable e) {}
+        } catch (Throwable e) {
+        }
     }
 
     // Send message to the chat-messaging room
     //
-    public void sendMessage(String message) throws IOException, CryptoException, NoSuchAlgorithmException, InvalidKeyException {
+    public void sendMessage(String message) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream dataStream = new DataOutputStream(byteStream);
 
@@ -131,22 +154,26 @@ public class SecureMulticastChat extends Thread {
         dataStream.writeUTF(username);
         dataStream.writeUTF(message);
         dataStream.close();
-        
-        byte[] data = new SMP4PGMSPacket(byteStream.toByteArray()).toByteArray();
-        DatagramPacket packet = new DatagramPacket(data, data.length, group, msocket.getLocalPort());
+
+        byte[] data = new SMP4PGMSPacket(byteStream.toByteArray(), MESSAGE).toByteArray();
+        DatagramPacket packet = new DatagramPacket(data, data.length, group,
+                msocket.getLocalPort());
         msocket.send(packet);
     }
 
 
     // Process a received message  //
     //
-    protected void processMessage(DataInputStream istream, InetAddress address, int port) throws IOException {
+    protected void processMessage(DataInputStream istream,
+                                  InetAddress address,
+                                  int port) throws IOException {
         String username = istream.readUTF();
         String message = istream.readUTF();
 
         try {
             listener.chatMessageReceived(username, address, port, message);
-        } catch (Throwable e) {}
+        } catch (Throwable e) {
+        }
     }
 
     // Loop:
@@ -165,26 +192,27 @@ public class SecureMulticastChat extends Thread {
 
                 // Read received datagram
                 byte[] data = SMP4PGMSPacket.receivePacket(new ByteArrayInputStream(packet.getData(), packet.getOffset(), packet.getLength()).readAllBytes());
-                DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(data));
+                DataInputStream istream = new DataInputStream(new ByteArrayInputStream(data));
 
-                long magic = dataInputStream.readLong();
+                long magic = istream.readLong();
 
                 // Only accepts CHAT-MAGIC-NUMBER of the Chat
                 if (magic != CHAT_MAGIC_NUMBER) {
                     continue;
+
                 }
 
                 // Let's analyze the received payload and msg types in rceoved datagram
-                int opCode = dataInputStream.readInt();
+                int opCode = istream.readInt();
                 switch (opCode) {
                     case JOIN:
-                        processJoin(dataInputStream, packet.getAddress(), packet.getPort());
+                        processJoin(istream, packet.getAddress(), packet.getPort());
                         break;
                     case LEAVE:
-                        processLeave(dataInputStream, packet.getAddress(), packet.getPort());
+                        processLeave(istream, packet.getAddress(), packet.getPort());
                         break;
                     case MESSAGE:
-                        processMessage(dataInputStream, packet.getAddress(), packet.getPort());
+                        processMessage(istream, packet.getAddress(), packet.getPort());
                         break;
                     default:
                         error("rror; Unknown type " + opCode + " sent from  "
@@ -200,13 +228,14 @@ public class SecureMulticastChat extends Thread {
                  */
 
             } catch (Throwable e) {
-                error("Processing error: " + e.getClass().getName() + ": "
-                        + e.getMessage());
+                e.printStackTrace();
+                error("Processing error: " + e.getClass().getName() + ": " + e.getMessage());
             }
         }
 
         try {
             msocket.close();
-        } catch (Throwable e) {}
+        } catch (Throwable e) {
+        }
     }
 }

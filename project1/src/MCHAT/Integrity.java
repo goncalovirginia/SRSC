@@ -31,17 +31,17 @@ public class Integrity {
     public static byte[] hmac(byte[] data) throws NoSuchAlgorithmException, InvalidKeyException {
         return hmac(SecurityConfig.MAC_ALGORITHM, SecurityConfig.MAC_KEY, data);
     }
-    
+
     public static byte[] signature(byte[] data) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, SignatureException {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDSA");
         ECGenParameterSpec ecSpec = new ECGenParameterSpec(SecurityConfig.ELLIPTIC_CURVE_ALGORITHM);
         kpg.initialize(ecSpec, new SecureRandom());
         KeyPair keyPair = kpg.generateKeyPair();
-        
+
         Signature signature = Signature.getInstance(SecurityConfig.SIGNATURE_ALGORITHM);
         signature.initSign(keyPair.getPrivate(), new SecureRandom());
         signature.update(data);
-        
+
         return signature.sign();
     }
 

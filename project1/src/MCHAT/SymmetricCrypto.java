@@ -32,7 +32,8 @@ public class SymmetricCrypto {
                 case "CHACHA20" -> chacha20Crypto(mode, key, content);
                 default -> blockCrypto(mode, key, content);
             };
-        } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | BadPaddingException |
+                 IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
             throw new CryptoException(e.getMessage());
         }
