@@ -1,4 +1,6 @@
-package MCHAT;// SecureMulticastChat.java
+package MCHAT;
+
+// SecureMulticastChat.java
 // Represents the Multicast Chat/Messaging Protocol
 // As you can see, the used Multicast Communication Channel
 // is not secure .... Messages flow as plaintext messages
@@ -44,20 +46,16 @@ public class SecureMulticastChat extends Thread {
     protected MulticastChatEventListener listener;
 
     // Control  - execution thread
-
     protected boolean isActive;
 
     // Multicast Chat-Messaging
-    public SecureMulticastChat(String username, InetAddress group, int port,
-                               int ttl, MulticastChatEventListener listener) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
-
+    public SecureMulticastChat(String username, InetAddress group, int port, int ttl, MulticastChatEventListener listener) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
         SecureMulticastChat.username = username;
         this.group = group;
         this.listener = listener;
         isActive = true;
 
         // create & configure multicast socket
-
         msocket = new MulticastSocket(port);
         msocket.setSoTimeout(DEFAULT_SOCKET_TIMEOUT_MILLIS);
         msocket.setTimeToLive(ttl);
@@ -160,7 +158,6 @@ public class SecureMulticastChat extends Thread {
         msocket.send(packet);
     }
 
-
     // Process a received message  //
     //
     protected void processMessage(DataInputStream istream,
@@ -217,15 +214,12 @@ public class SecureMulticastChat extends Thread {
                         error("rror; Unknown type " + opCode + " sent from  "
                                 + packet.getAddress() + ":" + packet.getPort());
                 }
-
             } catch (InterruptedIOException e) {
-
                 /**
                  * Handler for Interruptions ...
                  * WILL DO NOTHING ,,,
                  * Used for debugging / control if wanted ... to notify the loop interruption
                  */
-
             } catch (Throwable e) {
                 e.printStackTrace();
                 error("Processing error: " + e.getClass().getName() + ": " + e.getMessage());
