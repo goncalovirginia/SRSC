@@ -19,7 +19,7 @@ public class SMP4PGMSPacket {
     private static final Base64.Decoder base64Decoder = Base64.getDecoder();
     private static final Set<String> generatedNonces = new HashSet<>(), receivedUsernameNonces = new HashSet<>();
     private final StringBuilder packet;
-    private byte[] nonce;
+    private final byte[] nonce;
 
     public SMP4PGMSPacket(byte[] data, int opCode) throws CryptoException, NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
         packet = new StringBuilder();

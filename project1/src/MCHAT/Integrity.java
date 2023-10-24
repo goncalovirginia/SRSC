@@ -73,14 +73,14 @@ public class Integrity {
     private static PublicKey getPublicKey(String username) throws InvalidKeySpecException, NoSuchAlgorithmException {
         String publicKeyHex = SecurityConfig.publicKeys.get(username)[1];
         byte[] byteKey = HexFormat.of().parseHex(publicKeyHex);
-        X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey);
+        X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(byteKey);
         KeyFactory kf = KeyFactory.getInstance("ECDSA");
-        return kf.generatePublic(X509publicKey);
+        return kf.generatePublic(x509EncodedKeySpec);
     }
 
     private static PrivateKey getPrivateKey() throws InvalidKeySpecException, NoSuchAlgorithmException {
-        String publicKeyHex = SecurityConfig.PRIVATE_KEY;
-        byte[] byteKey = HexFormat.of().parseHex(publicKeyHex);
+        String privateKeyHex = SecurityConfig.PRIVATE_KEY;
+        byte[] byteKey = HexFormat.of().parseHex(privateKeyHex);
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(byteKey);
         KeyFactory kf = KeyFactory.getInstance("ECDSA");
         return kf.generatePrivate(pkcs8EncodedKeySpec);
