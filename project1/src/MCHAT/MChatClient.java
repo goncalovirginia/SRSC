@@ -28,7 +28,6 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
     protected SecureMulticastChat chat;
 
     // Txtarea in GUI for chatting/messaging or receiving events in the Chat "room"
-
     protected JTextArea textArea;
 
     // Area for message input

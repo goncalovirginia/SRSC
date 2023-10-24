@@ -56,7 +56,7 @@ public class SMP4PGMSPacket {
 
         return data;
     }
-    
+
     private static void validateHeader(String header, String payloadUsername) throws SMP4PGMSPacketException, IOException, NoSuchAlgorithmException {
         String[] headerParts = header.split(";");
         int headerProtocolVersion = Integer.parseInt(headerParts[0]);

@@ -1,7 +1,5 @@
 package MCHAT;
 
-import _2ECCDSA_Signatures.Utils3;
-import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Mac;
@@ -11,7 +9,6 @@ import java.security.spec.ECGenParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
 import java.util.HexFormat;
 
 public class Integrity {
@@ -53,7 +50,7 @@ public class Integrity {
         signature.update(data);
         return signature.sign();
     }
-    
+
     public static boolean validateSignature(byte[] message, byte[] signatureBytes, String username) throws NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, InvalidKeyException {
         PublicKey publicKey = getPublicKey(username);
         Signature signature = Signature.getInstance(SecurityConfig.SIGNATURE_ALGORITHM);

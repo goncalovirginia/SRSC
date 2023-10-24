@@ -33,13 +33,10 @@ public class SecureMulticastChat extends Thread {
 
     // Timeout for sockets
     public static final int DEFAULT_SOCKET_TIMEOUT_MILLIS = 5000;
-
-    // Multicast socket used to send and receive multicast protocol PDUs
-    protected MulticastSocket msocket;
-
     // Username / User-Nick-Name in Chat
     protected static String username;
-
+    // Multicast socket used to send and receive multicast protocol PDUs
+    protected MulticastSocket msocket;
     // Grupo IP Multicast used
     protected InetAddress group;
 
