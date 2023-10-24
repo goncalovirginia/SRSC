@@ -1,4 +1,6 @@
-package MCHAT;// MChatClient.java
+package MCHAT;
+
+// MChatClient.java
 // Main Multicast Chat-Message tool
 // 
 
@@ -21,6 +23,7 @@ import java.util.Iterator;
 // Uses ... A swing based simple GUI interface ...
 
 public class MChatClient extends JFrame implements MulticastChatEventListener {
+
     // The "multicast chat" window
     protected SecureMulticastChat chat;
 
@@ -48,14 +51,12 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
         textArea.setLineWrap(true);
         textArea.setBorder(BorderFactory.createLoweredBevelBorder());
 
-        JScrollPane textAreaScrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane textAreaScrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getContentPane().add(textAreaScrollPane, BorderLayout.CENTER);
 
         users = new DefaultListModel();
         JList usersList = new JList(users);
-        JScrollPane usersListScrollPane = new JScrollPane(usersList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER) {
+        JScrollPane usersListScrollPane = new JScrollPane(usersList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER) {
             public Dimension getMinimumSize() {
                 Dimension d = super.getMinimumSize();
                 d.width = 100;
@@ -95,7 +96,6 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
 
         box.add(Box.createVerticalGlue());
 
-
         JPanel filePanel = new JPanel(new BorderLayout());
 
         filePanel.add(new JLabel("Not used"), BorderLayout.WEST);
@@ -117,7 +117,6 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
         box.add(filePanel);
 
         box.add(Box.createVerticalGlue());
-
 
         getContentPane().add(box, BorderLayout.SOUTH);
 
@@ -145,8 +144,7 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
     // Command-line invocation expecting three arguments
     public static void main(String[] args) {
         if ((args.length != 3) && (args.length != 4)) {
-            System.err.println("Use: MChatCliente "
-                    + "<nickusername> <grupo IPMulticast> <porto> { <ttl> }");
+            System.err.println("Use: MChatCliente " + "<nickusername> <grupo IPMulticast> <porto> { <ttl> }");
             System.err.println(" - TTL default = 1");
             System.exit(1);
         }
@@ -159,14 +157,12 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
         try {
             group = InetAddress.getByName(args[1]);
         } catch (Throwable e) {
-            System.err.println("Invalid IPv4 Multicat Address "
-                    + e.getMessage());
+            System.err.println("Invalid IPv4 Multicat Address " + e.getMessage());
             System.exit(1);
         }
 
         if (!group.isMulticastAddress()) {
-            System.err.println("Group: " + args[1]
-                    + " is not a valid IP multicast");
+            System.err.println("Group: " + args[1] + " is not a valid IP multicast");
             System.exit(1);
         }
 
@@ -190,7 +186,6 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
             MChatClient frame = new MChatClient();
             frame.setSize(800, 300);
             frame.setVisible(true);
-
             frame.join(username, group, port, ttl);
         } catch (Throwable e) {
             System.err.println("Error starting frame: " + e.getClass().getName() + ": " + e.getMessage());
@@ -233,11 +228,8 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
     }
 
     // Multicast address used for the chat-messagig room
-    public void join(String username, InetAddress group, int port,
-                     int ttl) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
-        setTitle("CHAT MulticastIP " + username + "@" + group.getHostAddress()
-                + ":" + port + " [TTL=" + ttl + "]");
-
+    public void join(String username, InetAddress group, int port, int ttl) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
+        setTitle("CHAT MulticastIP " + username + "@" + group.getHostAddress() + ":" + port + " [TTL=" + ttl + "]");
 
         // Creates a multicast session (as the chat-messaging room)
         chat = new SecureMulticastChat(username, group, port, ttl, this);
@@ -294,7 +286,6 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
      * This is code if we want to add the possibility for a user to
      * to ask to download a file ... BUT WILL NOT BE USED !
      **/
-
     protected void downloadFile() {
         final String file = fileField.getText();
         fileField.setText("");
@@ -325,8 +316,7 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
     }
 
     // Process a received message
-    public void chatMessageReceived(String username, InetAddress address,
-                                    int port, String message) {
+    public void chatMessageReceived(String username, InetAddress address, int port, String message) {
         log("MSG:[" + username + "@" + address.getHostName() + "] said : " + message);
     }
 
@@ -336,9 +326,8 @@ public class MChatClient extends JFrame implements MulticastChatEventListener {
     }
 
     // Processing when a user leaves the chat  //
-    public void chatParticipantLeft(String username, InetAddress address,
-                                    int port) {
-        log("--- USER: " + username + " leaves from " + address.getHostName() + ":"
-                + port);
+    public void chatParticipantLeft(String username, InetAddress address, int port) {
+        log("--- USER: " + username + " leaves from " + address.getHostName() + ":" + port);
     }
+
 }
