@@ -12,22 +12,22 @@ import java.security.Security;
  */
 public class CostRSAKeyGeneration {
 
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-    }
+	static {
+		Security.addProvider(new BouncyCastleProvider());
+	}
 
-    public static void main(
-            String[] args)
-            throws Exception {
+	public static void main(
+			String[] args)
+			throws Exception {
 
-        SecureRandom random = new SecureRandom();
+		SecureRandom random = new SecureRandom();
 
-        // Criar par de chaves
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
-        generator.initialize(2048, random);
-        // generator.initialize(4096, random);
-        KeyPair pair = generator.generateKeyPair();
-    }
+		// Criar par de chaves
+		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
+		generator.initialize(2048, random);
+		// generator.initialize(4096, random);
+		KeyPair pair = generator.generateKeyPair();
+	}
 }
 
 

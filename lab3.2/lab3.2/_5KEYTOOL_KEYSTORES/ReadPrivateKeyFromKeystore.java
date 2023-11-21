@@ -11,23 +11,23 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 
 public class ReadPrivateKeyFromKeystore {
-    public static void main(String[] argv) throws Exception {
-        FileInputStream is = new FileInputStream("lab3.2/lab3.2/_5KEYTOOL_KEYSTORES/hj.jks");
+	public static void main(String[] argv) throws Exception {
+		FileInputStream is = new FileInputStream("lab3.2/lab3.2/_5KEYTOOL_KEYSTORES/hj.jks");
 
-        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keystore.load(is, "hjhjhjhj".toCharArray());
+		KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+		keystore.load(is, "hjhjhjhj".toCharArray());
 
-        String alias = "hj";
+		String alias = "hj";
 
-        Key key = keystore.getKey(alias, "hjhjhjhj".toCharArray());
-        if (key instanceof PrivateKey) {
+		Key key = keystore.getKey(alias, "hjhjhjhj".toCharArray());
+		if (key instanceof PrivateKey) {
 
-            PrivateKey privatekey = (PrivateKey) key;
+			PrivateKey privatekey = (PrivateKey) key;
 
-            System.out.println(privatekey.getAlgorithm());
-            System.out.println(privatekey.getFormat());
-            System.out.println(Utils1.toHex(privatekey.getEncoded()));
-        }
+			System.out.println(privatekey.getAlgorithm());
+			System.out.println(privatekey.getFormat());
+			System.out.println(Utils1.toHex(privatekey.getEncoded()));
+		}
 
-    }
+	}
 }

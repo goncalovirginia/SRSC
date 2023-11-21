@@ -9,48 +9,48 @@ import java.security.SecureRandom;
  */
 public class Utils3
 
-        extends Utils2 {
-    /**
-     * Retorna um SecureRandom de teste com o mesmo valor...
-     *
-     * @return random fixo
-     */
-    public static SecureRandom createFixedRandom() {
-        return new FixedRand();
-    }
+		extends Utils2 {
+	/**
+	 * Retorna um SecureRandom de teste com o mesmo valor...
+	 *
+	 * @return random fixo
+	 */
+	public static SecureRandom createFixedRandom() {
+		return new FixedRand();
+	}
 
-    private static class FixedRand extends SecureRandom {
-        MessageDigest sha;
-        byte[] state;
+	private static class FixedRand extends SecureRandom {
+		MessageDigest sha;
+		byte[] state;
 
-        FixedRand() {
-            try {
-                this.sha = MessageDigest.getInstance("SHA-1");
-                this.state = sha.digest();
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException("Nao existe suporte SHA-1!");
-            }
-        }
+		FixedRand() {
+			try {
+				this.sha = MessageDigest.getInstance("SHA-1");
+				this.state = sha.digest();
+			} catch (NoSuchAlgorithmException e) {
+				throw new RuntimeException("Nao existe suporte SHA-1!");
+			}
+		}
 
-        public void nextBytes(
-                byte[] bytes) {
-            int off = 0;
+		public void nextBytes(
+				byte[] bytes) {
+			int off = 0;
 
-            sha.update(state);
+			sha.update(state);
 
-            while (off < bytes.length) {
-                state = sha.digest();
+			while (off < bytes.length) {
+				state = sha.digest();
 
-                if (bytes.length - off > state.length) {
-                    System.arraycopy(state, 0, bytes, off, state.length);
-                } else {
-                    System.arraycopy(state, 0, bytes, off, bytes.length - off);
-                }
+				if (bytes.length - off > state.length) {
+					System.arraycopy(state, 0, bytes, off, state.length);
+				} else {
+					System.arraycopy(state, 0, bytes, off, bytes.length - off);
+				}
 
-                off += state.length;
+				off += state.length;
 
-                sha.update(state);
-            }
-        }
-    }
+				sha.update(state);
+			}
+		}
+	}
 }

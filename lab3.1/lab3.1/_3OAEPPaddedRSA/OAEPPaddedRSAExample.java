@@ -19,82 +19,82 @@ import java.security.*;
 
 public class OAEPPaddedRSAExample {
 
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-    }
+	static {
+		Security.addProvider(new BouncyCastleProvider());
+	}
 
-    public static void main(
-            String[] args)
-            throws Exception {
-        byte[] input = new byte[]{
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
-                0x00, 0x00, (byte) 0xAB, (byte) 0xCD
-        };
-
-
-        System.out.println("Input size: " + input.length);
-
-        Cipher cipher = Cipher.getInstance("RSA/NONE/OAEPWithSHA256AndMGF1Padding", "BC");
-        SecureRandom random = Utils3.createFixedRandom();
-
-        // gerar chaves
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
-
-        generator.initialize(2048, random);
-
-        KeyPair pair = generator.generateKeyPair();
-        Key pubKey = pair.getPublic();
-        Key privKey = pair.getPrivate();
+	public static void main(
+			String[] args)
+			throws Exception {
+		byte[] input = new byte[]{
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD,
+				0x00, 0x00, (byte) 0xAB, (byte) 0xCD
+		};
 
 
-        System.out.println("input : " + Utils3.toHex(input));
+		System.out.println("Input size: " + input.length);
 
-        // Cifrar
+		Cipher cipher = Cipher.getInstance("RSA/NONE/OAEPWithSHA256AndMGF1Padding", "BC");
+		SecureRandom random = Utils3.createFixedRandom();
 
-        cipher.init(Cipher.ENCRYPT_MODE, pubKey, random);
+		// gerar chaves
+		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
 
-        byte[] cipherText = cipher.doFinal(input);
+		generator.initialize(2048, random);
 
-        System.out.println("cipher: " + Utils3.toHex(cipherText));
-        System.out.println("Length:" + cipherText.length);
+		KeyPair pair = generator.generateKeyPair();
+		Key pubKey = pair.getPublic();
+		Key privKey = pair.getPrivate();
 
-        // Decifrar
 
-        cipher.init(Cipher.DECRYPT_MODE, privKey);
+		System.out.println("input : " + Utils3.toHex(input));
 
-        byte[] plainText = cipher.doFinal(cipherText);
+		// Cifrar
 
-        System.out.println("plain : " + Utils3.toHex(plainText));
-        System.out.println("Length:" + plainText.length);
-    }
+		cipher.init(Cipher.ENCRYPT_MODE, pubKey, random);
+
+		byte[] cipherText = cipher.doFinal(input);
+
+		System.out.println("cipher: " + Utils3.toHex(cipherText));
+		System.out.println("Length:" + cipherText.length);
+
+		// Decifrar
+
+		cipher.init(Cipher.DECRYPT_MODE, privKey);
+
+		byte[] plainText = cipher.doFinal(cipherText);
+
+		System.out.println("plain : " + Utils3.toHex(plainText));
+		System.out.println("Length:" + plainText.length);
+	}
 }

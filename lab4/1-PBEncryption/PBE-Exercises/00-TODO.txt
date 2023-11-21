@@ -1,0 +1,79 @@
+Note)
+For these examples you must have the
+Bouncy Castle Provider installed, to have
+support for the used password-based encryption algorithms.
+
+Here we are using Passsword-Based Encryption (or PBEncryption).
+A PBEncryption construction is a cryptographic constrction using
+block-based symmetric encryption, in which a passwords, a salt and a
+counter are used as initial parameters for the encyption or decryption
+process.
+
+This means that in such constructions, passwords, salt and counters
+are used by the PBEEncryption construction to first generate a key for
+a symmetric algorithm adopted by the construction and then the generated
+key is used for encryption/decryption of the input information (data
+or messages).
+
+Compile and run the code given in the two examples to understand.
+There are two examples showing different modes of use.
+
+PBEWithParamsExample.java
+---------------------------
+In this case as you see, the secrecy parameters are pre-initialized
+and then used in the PBEncrtption construction itself.
+    
+PBEWithoutParamsExample.java
+-----------------------------
+In this case, the secrecy parameters are passed as arguents
+directly to the PBEncryption computation
+
+As you see, the computation generated the same cyphertext in
+these examples. Does it make sense ?
+
+PBEOtherExample.java
+--------------------
+This is just to know that we can use other avaiable constructions
+in a given crypto-provider. Later on you can revise again the exercises
+in Lab2, just to discover other PBEencryption implementations you have
+in your installed JAVA/JCE Crypto-providers
+
+As in previous examples, you see a ciphertext expansion.
+How many bytes are expanded ? Does it make sense ? Why ?
+
+BUT (FINAL QUESTION).....
+============================
+But something seems strange in the provided examples ;-) (!?)
+What we do (both cases) is to encrypt with an usual encryption
+operation and an encryption key, using directly a symmetric 
+encryption construction and then we decrypt later with with
+a Password Based Encryption (in this case used for Decryption) with
+the shown input secrecy parameters .... 
+
+However this works.
+
+Questions:
+- Why it works well ?
+- What interest you find in having encryption and decryption using
+  such different constructions ?
+  Hint: suppose you have a client sending encrypted data to a server,
+        and the server only has a registration of users that run the
+        client in the form:
+	
+	username:*******
+
+        where ******* is an Hash of the password used by the user
+	(e.g., H(pwd).
+
+- What is the security relevance of counters and salts for PBENcryption
+constructions ? How to synchronize counters ans salts whem we deal
+with distributed processes ?
+
+
+Complementary:
+See also in PBEFileEncryption (classes PBEFileEncryption.java and
+PBEFileDecryption.java) how to program a very simple tool to encrypt/decrypt files in a simple way, using
+any selected PBE construction.
+    
+
+

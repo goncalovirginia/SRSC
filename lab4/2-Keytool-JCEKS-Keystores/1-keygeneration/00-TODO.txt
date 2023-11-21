@@ -1,0 +1,22 @@
+TODO:
+Just see the code and understand what is there ... 
+Compile and verify the run
+
+As you see, we are generating dynamically the symmetric key for the
+used algorithm (same construction for any other symmetric algorithm).
+
+In the discussed example for Encryption/Decryption we are using the mode GCM !
+As we will see in Lectrues (Tehory), this mode, as others modes (ex.,
+CCM), process encryption/decryption blocs for block-oriented ciphers 
+in which the processing includes a MAC (as a proof of integrity).
+So, the decryption processing implictly can verify the integrity of the
+received ciphertext (something that you do by adding explicit Hashes or
+MACs (HMACs or CMACs) when using modes like ECB, CCB, CFB, OFB or CTR.
+
+This is why GCM or CCM modes are called cipher block modes of
+operation with implicit message integrity guarantees).
+
+You can see that in the example that GCM expands ciphertext compared with the plaintext ...
+... a lot ... 
+What is GCM adding ??? Interesting question for the discussion in
+lectures.

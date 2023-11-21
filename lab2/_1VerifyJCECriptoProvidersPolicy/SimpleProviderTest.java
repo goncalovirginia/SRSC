@@ -12,18 +12,18 @@ import java.security.Security;
  * Ex: BC, SunJCE - Sun, ...
  */
 public class SimpleProviderTest {
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 
-        System.out.println("----------------------------");
-        // Verificar se o provedor BoucyCastle esta instalado !
-        String providerName = "BC";
-        if (Security.getProvider(providerName) == null) {
-            System.out.println(providerName + " nao instalado :-(");
-        } else {
-            System.out.println(providerName + " instalado !");
-        }
-        System.out.println("----------------------------");
-    }
+		System.out.println("----------------------------");
+		// Verificar se o provedor BoucyCastle esta instalado !
+		String providerName = "BC";
+		if (Security.getProvider(providerName) == null) {
+			System.out.println(providerName + " nao instalado :-(");
+		} else {
+			System.out.println(providerName + " instalado !");
+		}
+		System.out.println("----------------------------");
+	}
 }
 
 

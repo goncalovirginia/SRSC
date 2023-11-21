@@ -14,41 +14,41 @@ import java.security.Signature;
  * com o tamanho necessario
  */
 public class DSASignatureExample {
-    public static void main(
-            String[] args)
-            throws Exception {
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
+	public static void main(
+			String[] args)
+			throws Exception {
+		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
 
-        keyGen.initialize(2048, new SecureRandom());
+		keyGen.initialize(2048, new SecureRandom());
 
-        KeyPair keyPair = keyGen.generateKeyPair();
-        Signature signature = Signature.getInstance("SHA256withDSA");
-        // gerar objecto  signature
+		KeyPair keyPair = keyGen.generateKeyPair();
+		Signature signature = Signature.getInstance("SHA256withDSA");
+		// gerar objecto  signature
 
-        signature.initSign(keyPair.getPrivate());
+		signature.initSign(keyPair.getPrivate());
 
-        byte[] message = new byte[]
-                {(byte) 'a', (byte) 'b', (byte) 'c', (byte) 'd'};
+		byte[] message = new byte[]
+				{(byte) 'a', (byte) 'b', (byte) 'c', (byte) 'd'};
 
-        signature.update(message);
-        byte[] sigBytes = signature.sign();
+		signature.update(message);
+		byte[] sigBytes = signature.sign();
 
-        // Verificar - neste caso estamos a obter a chave publica do par mas
-        // em geral usamos a chave publica que previamente conhecemos de
-        // quem assinou.
-        //
-        System.out.println("MSG to sign (hex) : " + Utils1.toHex(message));
-        System.out.println("Msg Size (bytes)  : " + message.length);
-        System.out.println("Signature (hex)   : " + Utils1.toHex(sigBytes));
-        System.out.println("Sig. Size (bytes) : " + sigBytes.length);
+		// Verificar - neste caso estamos a obter a chave publica do par mas
+		// em geral usamos a chave publica que previamente conhecemos de
+		// quem assinou.
+		//
+		System.out.println("MSG to sign (hex) : " + Utils1.toHex(message));
+		System.out.println("Msg Size (bytes)  : " + message.length);
+		System.out.println("Signature (hex)   : " + Utils1.toHex(sigBytes));
+		System.out.println("Sig. Size (bytes) : " + sigBytes.length);
 
-        signature.initVerify(keyPair.getPublic());
-        signature.update(message);
+		signature.initVerify(keyPair.getPublic());
+		signature.update(message);
 
-        if (signature.verify(sigBytes)) {
-            System.out.println("Assinatura validada - reconhecida");
-        } else {
-            System.out.println("Assinatura nao reconhecida");
-        }
-    }
+		if (signature.verify(sigBytes)) {
+			System.out.println("Assinatura validada - reconhecida");
+		} else {
+			System.out.println("Assinatura nao reconhecida");
+		}
+	}
 }

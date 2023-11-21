@@ -1,0 +1,6 @@
+About PBKDF2
+-------------
+PBKDF2 is a also an algorithm designed to strengthen the security of passwords by creating cryptographic keys for cryptographic operations such as encryption. It achieves this by applying repeated hashing (iterations) to the password and adding a random “salt” to thwart brute-force attacks.
+
+
+

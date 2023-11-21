@@ -1,0 +1,92 @@
+SRSC2223 Labs, hj
+
+This is a very simple tutorial, to teach you how to create any kind of
+certificate or certificate chain you want, if you want to use the
+keytool. 
+Of coursem, if you want toc reate something which can be used in a final
+internet production environment, you need to find a trusted CA ;-)
+
+But here we are going through how a certificate chain is
+created. If you want to know about keystore, you can refer to
+the different keystore types in Java (as you find in other Labs)
+
+======================
+
+p1) To begin, we first generate a key pair which will be used as the CA,
+ts private key will be used to sign the certificate it issues.
+
+keytool -genkeypair -alias ca -keystore test.jks -dname "CN=CA"
+-storepass password -keypass password -ext bc=ca:true
+Note here an extension with BasicaContraint created to show that it's
+a CA.
+
+2) Then, generate a key pair where the certificate of it will be signed
+by the CA above.
+
+
+keytool -genkeypair -alias leaf -keystore test.jks -dname "CN=Leaf"
+-storepass password -keypass password
+
+3) Next, a certificate request for the "CN=Leaf" certificate needs to be
+created.
+
+keytool -certreq -keystore test.jks -storepass password -alias leaf
+-file leaf.csr
+
+4) Now creating the certificate with the certificate request generated
+above.
+
+
+keytool -gencert -keystore test.jks -storepass password -alias ca
+-infile leaf.csr -outfile leaf.cer
+
+5) An output certificate file leaf.cer will be created. Now let's see
+what its content is.
+
+
+keytool -printcert -file leaf.cer
+
+The certificate will look like:
+
+-------------------------------------------------------------------------
+Owner: CN=Leaf
+Issuer: CN=CA
+Serial number: 49fdb896
+Valid from: Thu Dec 17 20:44:51 CST 2015 until: Wed Mar 16 20:44:51
+CST 2016
+Certificate fingerprints:
+     MD5:  EE:C8:78:72:69:C0:45:2C:DA:C6:E5:A9:6C:F9:A6:33
+     SHA1: DC:21:3A:7A:6B:BE:55:2A:24:0D:A0:F3:7B:FA:AD:B7:B3:E9:6B:88
+     SHA256: 78:11:E2:42:37:66:16:1D:02:02:03:1B:36:91:FC:C9:98:10:28:43:B6:0E:A2:63:34:93:9F:77:EA:D9:15:AB
+     Signature algorithm name: SHA1withDSA
+     Version: 3
+	   
+Extensions: 
+#1: ObjectId: 2.5.29.35 Criticality=false
+AuthorityKeyIdentifier [
+KeyIdentifier [
+0000: 24 67 26 EE 9F 42 BE BF   CE 9E 8B 4D 8E 1E BD AF
+0010: 97 82 3D E4
+]
+]
+ 
+#2: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 23 19 D0 58 48 6B 41 4B   0E 24 42 3A FF 60 38 69
+0010: F1 63 11 12
+]
+]
+
+--------------------------------------------------------
+
+Note from the certificate that we can see its issuer is "CN=CA".
+
+
+
+
+6) Now you can have the chain with the two certificates, simply by
+     appending the CA root certificate and the leaf certificate
+     
+     
+7) Or you can also import a chain (if you want) to a chain keystore

@@ -11,48 +11,48 @@ import java.security.SecureRandom;
  */
 public class TamperedProtectionWithDigestExample {
 
-    public static void main(String[] args) throws Exception {
-        SecureRandom random = new SecureRandom();
-        IvParameterSpec ivSpec = Utils.createCtrIvForAES(1, random);
-        Key key = Utils.createKeyForAES(256, random);
-        Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
-        String input = "Transfer 0000100 to AC 1234-5678";
+	public static void main(String[] args) throws Exception {
+		SecureRandom random = new SecureRandom();
+		IvParameterSpec ivSpec = Utils.createCtrIvForAES(1, random);
+		Key key = Utils.createKeyForAES(256, random);
+		Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
+		String input = "Transfer 0000100 to AC 1234-5678";
 
-        MessageDigest hash = MessageDigest.getInstance("SHA1");
-        System.out.println("input : " + input);
+		MessageDigest hash = MessageDigest.getInstance("SHA1");
+		System.out.println("input : " + input);
 
-        // Cifrar (Alice Correta)
-        cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
-        byte[] cipherText = new byte[cipher.getOutputSize(input.length() + hash.getDigestLength())];
+		// Cifrar (Alice Correta)
+		cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
+		byte[] cipherText = new byte[cipher.getOutputSize(input.length() + hash.getDigestLength())];
 
-        int ctLength = cipher.update(Utils.toByteArray(input), 0, input.length(), cipherText, 0);
+		int ctLength = cipher.update(Utils.toByteArray(input), 0, input.length(), cipherText, 0);
 
-        // Input hash
-        hash.update(Utils.toByteArray(input));
+		// Input hash
+		hash.update(Utils.toByteArray(input));
 
-        ctLength += cipher.doFinal(hash.digest(), 0, hash.getDigestLength(), cipherText, ctLength);
+		ctLength += cipher.doFinal(hash.digest(), 0, hash.getDigestLength(), cipherText, ctLength);
 
-        // =========================================================
-        // Mallory : Atacante MiM
-        // Ataque de tampering
+		// =========================================================
+		// Mallory : Atacante MiM
+		// Ataque de tampering
 
-        cipherText[9] ^= '0' ^ '9';
+		cipherText[9] ^= '0' ^ '9';
 
-        // =========================================================
+		// =========================================================
 
-        // Decifrar ( Bob Correto)
+		// Decifrar ( Bob Correto)
 
-        cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
+		cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
 
-        byte[] plainText = cipher.doFinal(cipherText, 0, ctLength);
-        int messageLength = plainText.length - hash.getDigestLength();
+		byte[] plainText = cipher.doFinal(cipherText, 0, ctLength);
+		int messageLength = plainText.length - hash.getDigestLength();
 
-        hash.update(plainText, 0, messageLength);
+		hash.update(plainText, 0, messageLength);
 
-        byte[] messageHash = new byte[hash.getDigestLength()];
-        System.arraycopy(plainText, messageLength, messageHash, 0, messageHash.length);
+		byte[] messageHash = new byte[hash.getDigestLength()];
+		System.arraycopy(plainText, messageLength, messageHash, 0, messageHash.length);
 
-        System.out.println("plain : " + Utils.toString(plainText, messageLength) + " verified: " + MessageDigest.isEqual(hash.digest(), messageHash));
-    }
+		System.out.println("plain : " + Utils.toString(plainText, messageLength) + " verified: " + MessageDigest.isEqual(hash.digest(), messageHash));
+	}
 
 }

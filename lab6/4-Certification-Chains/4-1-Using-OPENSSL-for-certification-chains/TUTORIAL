@@ -1,0 +1,52 @@
+SRSC 2223 Labs, hj
+
+This is a very simple tutorial, to teach you how to create any kind of
+certificate or certificate chain you want, if you want to use the
+openssl tool
+Of course, if you want toc reate something which can be used in a final
+internet production environment, you need to find a trusted CA ;-)
+
+But here we are going through how a certificate chain is
+created. If you want to know about keystore, you can refer to
+the different keystore types in Java (as you find in other Labs)
+
+======================
+
+
+# Creation of Certiifcation Chains using openssl as a PKI Tool
+#
+# 1. Create our Root CA Certificate
+#
+openssl genrsa -out RootCA.key 4096
+openssl req -new -x509 -days 1500 -key RootCA.key -out RootCA.crt
+#
+# 2. Create an Intermediary Certificate
+#
+openssl genrsa -out IntermediateCA.key 4096
+openssl req -new -key IntermediateCA.key -out IntermediateCA.csr
+openssl x509 -req -days 265 -in IntermediateCA.csr -CA RootCA.crt -CAkey RootCA.key  -CAcreateserial -out IntermediateCA.crt
+#
+#
+# 3. Now the final (third-level) certificate
+#
+openssl genrsa -out SAAHServer.key 2048
+openssl req -new -key SAAHServer.key -out SAAHServer.csr
+openssl x509 -req -days 365 -in SAAHServer.csr -CA IntermediateCA.crt -CAkey IntermediateCA.key -set_serial 0101 -out SAAHServer.crt -sha256
+#
+#
+# Now you can put the certificated in a list (top-down or down-top for ex)
+#
+# So any third level entity can send the chain ...
+# And the other entities only need to trust in the RootCA
+#
+
+# For all above ...
+# You have also a complete tutorial, with similar steps in:
+# https://www.golinuxcloud.com/create-certificate-authority-root-ca-linux/
+# showing the same essential thing: how to create a "certificate authority"
+# and sign a certificate with teh root CA (e.g., signing the chained
+# certificates with the provate key of the pair in the rot of trust
+# (represented by the root certificate - the CA certificate, the one
+# you will use in a certificate store used as a trusted store.
+
+

@@ -14,45 +14,45 @@ import java.security.Signature;
  * para a assinatura
  */
 public class PKCS1SignatureExample {
-    public static void main(
-            String[] args)
-            throws Exception {
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA");
+	public static void main(
+			String[] args)
+			throws Exception {
+		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("_1.1-UsingRSAandElGamal._1_1UsingRSAandElGamal.RSA");
 
-        keyGen.initialize(2048, new SecureRandom());
+		keyGen.initialize(2048, new SecureRandom());
 
-        KeyPair keyPair = keyGen.generateKeyPair();
-        Signature signature = Signature.getInstance("SHA256withRSA");
+		KeyPair keyPair = keyGen.generateKeyPair();
+		Signature signature = Signature.getInstance("SHA256withRSA");
 
-        // If want to use with the PSS padding scheme use:
-        // Signature  signature = Signature.getInstance("SHA256withRSA/PSS");
+		// If want to use with the PSS padding scheme use:
+		// Signature  signature = Signature.getInstance("SHA256withRSA/PSS");
 
-        signature.initSign(keyPair.getPrivate());
+		signature.initSign(keyPair.getPrivate());
 
-        byte[] message = new byte[]
-                {(byte) 'a', (byte) 'b', (byte) 'c', (byte) 'd'};
+		byte[] message = new byte[]
+				{(byte) 'a', (byte) 'b', (byte) 'c', (byte) 'd'};
 
-        signature.update(message);
-        byte[] sigBytes = signature.sign();
+		signature.update(message);
+		byte[] sigBytes = signature.sign();
 
-        // Verificar - neste caso estamos a obter a chave publica do par mas
-        // em geral usamos a chave publica que previamente conhecemos de
-        // quem assinou.
-        //
-        System.out.println();
-        System.out.println("MSG to sign (hex) : " + Utils1.toHex(message));
-        System.out.println("MSG size (bytes)  : " + message.length);
-        System.out.println("Signature (bytes) : " + Utils1.toHex(sigBytes));
-        System.out.println("Sig. Size (bytes) : " + sigBytes.length);
+		// Verificar - neste caso estamos a obter a chave publica do par mas
+		// em geral usamos a chave publica que previamente conhecemos de
+		// quem assinou.
+		//
+		System.out.println();
+		System.out.println("MSG to sign (hex) : " + Utils1.toHex(message));
+		System.out.println("MSG size (bytes)  : " + message.length);
+		System.out.println("Signature (bytes) : " + Utils1.toHex(sigBytes));
+		System.out.println("Sig. Size (bytes) : " + sigBytes.length);
 
 
-        signature.initVerify(keyPair.getPublic());
-        signature.update(message);
+		signature.initVerify(keyPair.getPublic());
+		signature.update(message);
 
-        if (signature.verify(sigBytes)) {
-            System.out.println("\nAssinatura validada - reconhecida");
-        } else {
-            System.out.println("\nAssinatura nao reconhecida");
-        }
-    }
+		if (signature.verify(sigBytes)) {
+			System.out.println("\nAssinatura validada - reconhecida");
+		} else {
+			System.out.println("\nAssinatura nao reconhecida");
+		}
+	}
 }

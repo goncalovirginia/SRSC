@@ -1,0 +1,41 @@
+# Example of using the openssl tool to obtai the certificate when
+#connecting to a HTTPS Server
+# In this case we will obtain the certificate for wikipedia
+# and store it in a local file named  wikipedia.pem
+#
+# ------------------------------------------
+openssl s_client -connect wikipedia.org:443 > wikipedia.pem
+# -------------------------------------------
+# Now we can inspect the certificate sent.
+# For example we can use a tool sucj as keytool
+
+# -------------------------------------------
+keytool -printcert -file wikipedia.pem
+# -------------------------------------------
+#
+#
+
+# See that we can also obtain the  certification chain as
+# sent by the Wikipedia HTTPS server
+# We will store all the chain in a local file named wikipediachain.pem
+
+# -------------------------------------------
+openssl s_client -connect wikipedia.org:443 -showcerts
+# -------------------------------------------
+
+# Note that you can inspect the obained chain with  keytool
+#
+# -------------------------------------------
+keytool -printcert -file wikipediachain.pem
+# -------------------------------------------
+#
+# Let's inspect two interesting attributes in the certificate,
+# (remember the relevante of such attributes): OCSP and CRL
+
+# In this case, we can use openssl tool to see if there is
+# the attribute OCSP and see the URI for the OCSP endpoint
+# as issued for the certificate
+
+
+
+

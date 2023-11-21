@@ -13,33 +13,33 @@ import java.security.PublicKey;
 import java.security.cert.Certificate;
 
 public class ReadPublicKeyFromKeystore {
-    public static void main(String[] argv) throws Exception {
-        FileInputStream is = new FileInputStream("hj.jks");
+	public static void main(String[] argv) throws Exception {
+		FileInputStream is = new FileInputStream("hj.jks");
 
-        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keystore.load(is, "hjhjhjhj".toCharArray());
+		KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+		keystore.load(is, "hjhjhjhj".toCharArray());
 
-        String alias = "hj";
+		String alias = "hj";
 
-        Key key = keystore.getKey(alias, "hjhjhjhj".toCharArray());
-        if (key instanceof PrivateKey) {
+		Key key = keystore.getKey(alias, "hjhjhjhj".toCharArray());
+		if (key instanceof PrivateKey) {
 
-            Certificate cert = keystore.getCertificate(alias);
-            // Get now public key
-            PublicKey publicKey = cert.getPublicKey();
-            System.out.println("PubKey Info----------------------------");
-            System.out.println(publicKey.toString());
-            System.out.println("PubKey Alg. found----------------------");
-            String pubkeyalg = publicKey.getAlgorithm();
-            System.out.println(pubkeyalg);
-            System.out.println("PubKey Format found--------------------");
-            String pubkeyformat = publicKey.getFormat();
-            System.out.println(pubkeyformat);
-            System.out.println("PubKey Encoding Extracted--------------");
-            byte[] pubkey = publicKey.getEncoded();
-            System.out.println(Utils1.toHex(pubkey));
+			Certificate cert = keystore.getCertificate(alias);
+			// Get now public key
+			PublicKey publicKey = cert.getPublicKey();
+			System.out.println("PubKey Info----------------------------");
+			System.out.println(publicKey.toString());
+			System.out.println("PubKey Alg. found----------------------");
+			String pubkeyalg = publicKey.getAlgorithm();
+			System.out.println(pubkeyalg);
+			System.out.println("PubKey Format found--------------------");
+			String pubkeyformat = publicKey.getFormat();
+			System.out.println(pubkeyformat);
+			System.out.println("PubKey Encoding Extracted--------------");
+			byte[] pubkey = publicKey.getEncoded();
+			System.out.println(Utils1.toHex(pubkey));
 
-        }
+		}
 
-    }
+	}
 }

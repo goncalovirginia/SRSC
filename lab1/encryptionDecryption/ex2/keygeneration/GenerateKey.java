@@ -13,58 +13,58 @@ import java.io.OutputStream;
 
 public class GenerateKey {
 
-    /*****************************************************************
-     Initializations
-     Use proper parameterization
-     note) Different symmetric algorithms use different keysizes ...
-     ****************************************************************/
+	/*****************************************************************
+	 Initializations
+	 Use proper parameterization
+	 note) Different symmetric algorithms use different keysizes ...
+	 ****************************************************************/
 
-    // public static final String ALGORITHM = "DESede";
-    // public static final Integer KEYSIZE = 168;    // 64, 112 , 168  bits
+	// public static final String ALGORITHM = "DESede";
+	// public static final Integer KEYSIZE = 168;    // 64, 112 , 168  bits
 
-    // public static final String ALGORITHM = "Blowfish";
-    // public static final Integer KEYSIZE = 448;    // 64, 128, 256, 448 bits
+	// public static final String ALGORITHM = "Blowfish";
+	// public static final Integer KEYSIZE = 448;    // 64, 128, 256, 448 bits
 
-    // You can select the right parameters for the key generation ...
-    // according to the symmetric algorithm you want
+	// You can select the right parameters for the key generation ...
+	// according to the symmetric algorithm you want
 
-    public static final String ALGORITHM = "AES";
-    public static final Integer KEYSIZE = 256;     // 128, 256 bits
-    public static final String KEYRING = "keyring";
+	public static final String ALGORITHM = "AES";
+	public static final Integer KEYSIZE = 256;     // 128, 256 bits
+	public static final String KEYRING = "keyring";
 
 
-    /**
-     * main()
-     */
+	/**
+	 * main()
+	 */
 
-    public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {
 
-        // Key generation for the chosen Alg.
+		// Key generation for the chosen Alg.
 
-        KeyGenerator kg = KeyGenerator.getInstance(ALGORITHM);
-        kg.init(KEYSIZE);
-        SecretKey key = kg.generateKey();
+		KeyGenerator kg = KeyGenerator.getInstance(ALGORITHM);
+		kg.init(KEYSIZE);
+		SecretKey key = kg.generateKey();
 
-        // We will store in a file (as a keyring, as a keystore file)
-        // ... Good idea ? Better idea to store/manage the key more securely?
+		// We will store in a file (as a keyring, as a keystore file)
+		// ... Good idea ? Better idea to store/manage the key more securely?
 
-        OutputStream os = new FileOutputStream(KEYRING);
-        try {
-            os.write(key.getEncoded());
-            System.out.println("----------------------------------------------");
-            System.out.println("Key " + ALGORITHM + " with " + KEYSIZE + " bits ");
-            System.out.println("Key stored in the file  " + KEYRING + "...");
-            System.out.println("----------------------------------------------");
-        } finally {
-            try {
-                os.close();
-            } catch (Exception e) {
+		OutputStream os = new FileOutputStream(KEYRING);
+		try {
+			os.write(key.getEncoded());
+			System.out.println("----------------------------------------------");
+			System.out.println("Key " + ALGORITHM + " with " + KEYSIZE + " bits ");
+			System.out.println("Key stored in the file  " + KEYRING + "...");
+			System.out.println("----------------------------------------------");
+		} finally {
+			try {
+				os.close();
+			} catch (Exception e) {
 
-                // ... Nothing by now ... Your exception handler if/when required
+				// ... Nothing by now ... Your exception handler if/when required
 
-            }
-        }
-    }
+			}
+		}
+	}
 
 }
 

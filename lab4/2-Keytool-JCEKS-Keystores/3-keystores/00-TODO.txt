@@ -1,0 +1,14 @@
+TODO:
+Well, here you have only some "cooking recipes" as
+examples to use the keytool tool.
+
+Well, lots of options, etc etc ... Is it "complex, boring ...;-( ??  "
+you can also use KeyStore Explorer - if you only like GUI things !
+
+But !!!!
+Dont be afraid of shell command tools with lots of options. 
+You must live with them !!!!
+
+Manual Pages help you:
+
+$man keytool    // in this case

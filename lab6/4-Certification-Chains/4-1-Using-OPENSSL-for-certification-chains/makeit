@@ -1,0 +1,55 @@
+#/bin/sh
+
+#
+# 1. Create our Root CA Certificate
+#
+openssl genrsa -out RootCA.key 4096
+openssl req -new -x509 -days 1500 -key RootCA.key -out RootCA.crt
+
+echo "---------------------------------------"
+echo "Root CA established !"
+echo "Root CA Cetificate: RootCA.crt"
+echo "------------------------------"
+
+#
+# 2. Create an Intermediary Certificate
+#
+openssl genrsa -out IntermediateCA.key 4096
+openssl req -new -key IntermediateCA.key -out IntermediateCA.csr
+openssl x509 -req -days 265 -in IntermediateCA.csr -CA RootCA.crt -CAkey RootCA.key  -CAcreateserial -out IntermediateCA.crt
+
+echo "---------------------------------------"
+echo "Intermediate Certificate established !"
+echo "Cert Sign request: IntermediateCA.csr"
+echo "Certificate: IntermediateCA.crt"
+echo "---------------------------------------"
+
+
+#
+#
+# 3. Now the final (third-level) certificate
+#
+openssl genrsa -out SAAHServer.key 2048
+openssl req -new -key SAAHServer.key -out SAAHServer.csr
+openssl x509 -req -days 365 -in SAAHServer.csr -CA IntermediateCA.crt -CAkey IntermediateCA.key -set_serial 0101 -out SAAHServer.crt -sha256
+
+echo "---------------------------------------"
+echo "Final Certificate established !"
+echo "Cert Sign request: SAAHServer.csr"
+echo "Certificate: SAAHServer.crt"
+echo "---------------------------------------"
+
+#
+#
+# Now you can put the certificated in a list (top-down or down-top for ex)
+#
+# So any third level entity can send the chain ...
+# And the other entities only need to trust in the RootCA
+#
+
+cat RootCA.crt IntermediateCA.crt SAAHServer.crt > SAAHCertChain.crt
+
+echo "---------------------------------------"
+echo "Certif. Chain for SAAHServer ready !"
+echo "Uhm... Try to access it w/ keytool"
+echo "---------------------------------------"

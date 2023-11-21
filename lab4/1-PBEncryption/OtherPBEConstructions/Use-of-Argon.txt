@@ -1,0 +1,108 @@
+Argon2 is a password-based key derivation function. It’s a secure password hashing function designed to have many parameters that can be adjusted. Moreover, Argon2 is a memory-hard function, meaning that it requires a lot of memory to compute and is difficult to implement on hardware with limited memory.
+
+Furthermore, it allows applications to customize the algorithm according to their security needs. This is essential for applications with different security requirements.
+
+Additionally, because Argon2 offers high security, it’s recommended for applications that require strong password protection. It resists attacks from GPUs and other specialized hardware.
+
+One of the strengths of Argon2 is that we can configure it based on different needs. We can set the number of iterations. This is the number of times the password will be hashed. A higher number of iterations will take more time to hash the password but will make the password more secure.
+
+Furthermore, we can set the memory cost. This is the amount of memory Argon2 will use. Higher memory cost will make the password more secure but consumes more system memory.
+
+Additionally, we can also set the parallelism cost. This is the number of threads that the Argon2 algorithm will use. Higher parallelism costs will speed up the password hashing process but reduce password security.
+
+In the following subsections, we’ll implement hashing with Argon2 using the Spring Security Crypto library and Bouncy Castle library.
+
+EX:
+
+The Spring Security Crypto library has a class to hash passwords using Argon2. It relies on the Bouncy Castle library internally.
+
+Let’s use the Spring Security Crypto library to hash a password. First, we need to add its dependency to the pom.xml:
+
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-crypto</artifactId>
+    <version>6.0.3</version>
+</dependency>
+
+Next, let’s see a unit test that hashes a password based on Argon2:
+
+@Test
+public void givenRawPassword_whenEncodedWithArgon2_thenMatchesEncodedPassword() {
+    String rawPassword = "Baeldung";
+    Argon2PasswordEncoder arg2SpringSecurity = new Argon2PasswordEncoder(16, 32, 1, 60000, 10);
+    String springBouncyHash = arg2SpringSecurity.encode(rawPassword);
+        
+    assertTrue(arg2SpringSecurity.matches(rawPassword, springBouncyHash));
+}
+
+In the example above, we declare a variable to store the raw password “Baeldung“. Next, we create an instance of Argon2PasswordEncoder with five arguments. We set the number of iterations to use to ten and also set the hash length to 32 bytes. The default hash length is 64 bytes. Furthermore, we set the memory cost to 60000 kilobytes, the parallelism factor to one thread, and the time cost to 16 iterations.
+
+Finally, we verify that the raw password matches the hashed password.
+
+USE OF BOUNCY CASTLE:
+----------------------
+
+Bouncy Castle library implementation is more low-level compared to Spring Security Crypto library. To use the Bouncy Castle library, we need to add its dependency to the pom.xml:
+
+<dependency>
+    <groupId>org.bouncycastle</groupId>
+    <artifactId>bcprov-jdk15on</artifactId>
+    <version>1.70</version>
+</dependency>
+Copy
+
+Let’s look at an example that implements hashing using the Bouncy Castle library.
+
+First, let’s create a method to generate a random salt for us:
+
+private byte[] generateSalt16Byte() {
+    SecureRandom secureRandom = new SecureRandom();
+    byte[] salt = new byte[16];
+    secureRandom.nextBytes(salt);
+        
+    return salt;
+}
+
+n the sample code above, we create a SecureRandom object, which is a class that provides a cryptographically strong random number generator. Next, we create a byte array of size 16 to store 16 bytes of data. Then, we invoke the nextBytes() method on secureRandom to generate the salt.
+
+Finally, let’s hash the password “xptopardaisaonunho-2023!"
+
+@Test
+public void givenRawPasswordAndSalt_whenArgon2AlgorithmIsUsed_thenHashIsCorrect() {
+    byte[] salt = generateSalt16Byte();
+    String password = "Baeldung";
+        
+    int iterations = 2;
+    int memLimit = 66536;
+    int hashLength = 32;
+    int parallelism = 1;
+        
+    Argon2Parameters.Builder builder = new Argon2Parameters.Builder(Argon2Parameters.ARGON2_id)
+      .withVersion(Argon2Parameters.ARGON2_VERSION_13)
+      .withIterations(iterations)
+      .withMemoryAsKB(memLimit)
+      .withParallelism(parallelism)
+      .withSalt(salt);
+        
+    Argon2BytesGenerator generate = new Argon2BytesGenerator();
+    generate.init(builder.build());
+    byte[] result = new byte[hashLength];
+    generate.generateBytes(password.getBytes(StandardCharsets.UTF_8), result, 0, result.length);
+        
+    Argon2BytesGenerator verifier = new Argon2BytesGenerator();
+    verifier.init(builder.build());
+    byte[] testHash = new byte[hashLength];
+    verifier.generateBytes(password.getBytes(StandardCharsets.UTF_8), testHash, 0, testHash.length);
+        
+    assertTrue(Arrays.equals(result, testHash));
+}
+
+In the example above, we create a random 16-byte salt using the generatesalt16Byte() method. Next, we define essential parameters for the algorithm, such as the number of iterations, the memory limit, the hash length, the parallelism factor, and the salt.
+
+In the code the idea is to create an Argon2BytesGenerator object. 
+This object helps to generate the password hash. 
+Then, the code defines a byte array to store the result of the hash generated.
+
+Finally, it is created another instance of Argon2BytesGenerator 
+to compare the result with a test hash. This asserts that the password hash using Argon is correct, verified by the Argon2 algorithm.
+

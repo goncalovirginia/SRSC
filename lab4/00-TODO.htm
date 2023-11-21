@@ -1,0 +1,84 @@
+<!-- saved from url=(0052)http://vps726303.ovh.net/srsc2324/labs/Lab-4/00-TODO -->
+<html>
+<head>
+    <meta content="text/html; charset=windows-1252" http-equiv="Content-Type">
+</head>
+<body>
+<pre>Segurança de Redes e Sistemas de Computadores 2022/2023, 1. semestre
+Materials for demo, exercices and discusison in this Lab
+(Lab Guideline and proposed activities)
+
+Goal:
+In this lab we will see other aspects in the practical use of symmetric
+cryptographic constructions and Java programming with JCA/JCE support, including:
+
+- To know and to use in practice password-based encryption (PBEncryption) schemes
+  and constructions available in the Java JCA/JCE support (in different cryptoproviders)
+- To know the principles and practical adoption of PBEncryption and to know how
+  to design, implement and materialize these type of constructions
+  (if we want to build this type of encryption/decryption schemes)
+- To know and how to use keystores (type JCEKS) to manage keys for symmetric
+  encryption.
+  We must notice that in our demos/discussions we will see that we could also
+  use these keystore types to store/manage/use other secrecy parameters (stored as
+  "keys", beyond the keys specifically used for symmetric encryption algoritms (stream
+  ciphers or block ciphers), ex:
+  - Management of IVs (if needed)
+  - Management of MAC keys (HMAC or CMAC keys)
+
+- To know the intral structure of JCEKS key store types
+- How to use tools (ex: java keytool) to generate keys or to manage keys
+  in such keystores
+- How to use such stores in the context of java programming
+
+PLEASE NOTE: JCEKS keystores in Java are only used for symmetric cryptography
+For asymmetric cryptographic there are other keystore types (JKS): we will learn
+about JKS keystores in another Lab.
+
+Challenges (TO DO activities in this lab and provided materials)
+--------------------------------------------------------------
+
+1. PBEncryption
+   Understand, experimental observation and discussion about the operation and demo
+   See PBE-Encryption.pdf for an interoductory explanation about PBEncryption
+   Follow the exercices/experimental observations in:
+   - PBE-Exercices (and see the 00-TODO to follow-up the lab)
+   - PBEFileEncryption (to know how to encrypt/decrypt files using PBE-Schemes
+   
+2. Keytool-JCEKS-Keystores
+   Material to know about JCEKS keystores and how to use these keystores in the
+   context of Java programming (JCA/JCE support) and for use with symmetric
+   cryptographic methods (using stream ciphers, block ciphers or MAC - HMACs or
+   CMACs constuctions)
+
+   With the provided examples, observations and proposed practical exercises, you
+   must understand the internal structure of JCEKS keystores, their use and intended
+   purpose.
+
+   Additionally: to learn how to use the java tool keytool as a way to
+   generate keys and/or to manage/manipulate JCEKS keystores
+
+   See all 00-TODO files provided to follow-up the explanations/discussion in Lab
+   and to make yourown observations for self-study purposes
+
+
+Exercices for your study after the Lab 3 activities
+-------------------------------------------------------
+
+1) Think on a possible application and requiremnets where the use of PBEncryption
+   schemes could be interesting.
+2) Considering the requirements for the Work Assignment 1: do you see soe advantage in
+   using a PBEEncryption scheme as a possible add-on or as an interesting option for
+   the context and requirements of the work assignment ?
+3) Do you see advantages in the use of JCEKS keystores in the context of the work
+   assignment 1, as an inprovement for the protection of the configuration files
+   used by Boxes and Streaming Server ? Explain/Discuss
+4) With the possibke use of JCEKS keystores, can we avoid the need of information
+   in configuration files (beyond the possible use of keystores) ? Or there is
+   relevant information in the proposed configuration files that is not suitable
+   or required to be stored/managed/maintained/protected with JCEKS keystores ?
+   Explain/Discuss
+    
+</pre>
+</body>
+</html>
