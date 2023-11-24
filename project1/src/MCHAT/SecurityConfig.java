@@ -28,9 +28,7 @@ public class SecurityConfig {
 		SIGNATURE_ALGORITHM = br.readLine().split(" ")[1];
 
 		br = new BufferedReader(new FileReader(VALID_USERS_FILE));
-		for (String line : br.lines().toList()) {
-			validUsers.add(line);
-		}
+		validUsers.addAll(br.lines().toList());
 
 		br = new BufferedReader(new FileReader(PUBLICKEYS_CONFIG_FILE));
 		for (String line : br.lines().toList()) {

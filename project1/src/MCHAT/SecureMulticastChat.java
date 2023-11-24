@@ -45,7 +45,7 @@ public class SecureMulticastChat extends Thread {
 	// Listener for Multicast events that must be processed
 	protected MulticastChatEventListener listener;
 
-	// Control  - execution thread
+	// Controls execution thread
 	protected boolean isActive;
 
 	// Multicast Chat-Messaging
@@ -71,7 +71,6 @@ public class SecureMulticastChat extends Thread {
 	/**
 	 * Sent notification when user wants to leave the Chat-messaging room
 	 */
-
 	public void terminate() throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
 		isActive = false;
 		sendLeave();
@@ -79,12 +78,10 @@ public class SecureMulticastChat extends Thread {
 
 	// to process error message
 	protected void error(String message) {
-		System.err.println(new Date() + ": SecureMulticastChat: "
-				+ message);
+		System.err.println(new Date() + ": SecureMulticastChat: " + message);
 	}
 
 	// Send a JOIN message
-	//
 	protected void sendJoin() throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		DataOutputStream dataStream = new DataOutputStream(byteStream);
@@ -95,15 +92,12 @@ public class SecureMulticastChat extends Thread {
 		dataStream.close();
 
 		byte[] data = new SMP4PGMSPacket(byteStream.toByteArray(), JOIN).toByteArray();
-		DatagramPacket packet = new DatagramPacket(data, data.length, group,
-				msocket.getLocalPort());
+		DatagramPacket packet = new DatagramPacket(data, data.length, group, msocket.getLocalPort());
 		msocket.send(packet);
 	}
 
 	// Process recived JOIN message
-	//
-	protected void processJoin(DataInputStream istream, InetAddress address,
-							   int port) throws IOException {
+	protected void processJoin(DataInputStream istream, InetAddress address, int port) throws IOException {
 		String name = istream.readUTF();
 
 		try {
@@ -123,15 +117,12 @@ public class SecureMulticastChat extends Thread {
 		dataStream.close();
 
 		byte[] data = new SMP4PGMSPacket(byteStream.toByteArray(), LEAVE).toByteArray();
-		DatagramPacket packet = new DatagramPacket(data, data.length, group,
-				msocket.getLocalPort());
+		DatagramPacket packet = new DatagramPacket(data, data.length, group, msocket.getLocalPort());
 		msocket.send(packet);
 	}
 
 	// Processes a multicast chat LEAVE and notifies listeners
-
-	protected void processLeave(DataInputStream istream, InetAddress address,
-								int port) throws IOException {
+	protected void processLeave(DataInputStream istream, InetAddress address, int port) throws IOException {
 		String username = istream.readUTF();
 
 		try {
@@ -141,7 +132,6 @@ public class SecureMulticastChat extends Thread {
 	}
 
 	// Send message to the chat-messaging room
-	//
 	public void sendMessage(String message) throws IOException, NoSuchAlgorithmException, CryptoException, InvalidKeyException, SignatureException, InvalidKeySpecException {
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 		DataOutputStream dataStream = new DataOutputStream(byteStream);
@@ -153,29 +143,23 @@ public class SecureMulticastChat extends Thread {
 		dataStream.close();
 
 		byte[] data = new SMP4PGMSPacket(byteStream.toByteArray(), MESSAGE).toByteArray();
-		DatagramPacket packet = new DatagramPacket(data, data.length, group,
-				msocket.getLocalPort());
+		DatagramPacket packet = new DatagramPacket(data, data.length, group, msocket.getLocalPort());
 		msocket.send(packet);
 	}
 
-	// Process a received message  //
-	//
-	protected void processMessage(DataInputStream istream,
-								  InetAddress address,
-								  int port) throws IOException {
+	// Process a received message
+	protected void processMessage(DataInputStream istream, InetAddress address, int port) throws IOException {
 		String username = istream.readUTF();
 		String message = istream.readUTF();
 
 		try {
 			listener.chatMessageReceived(username, address, port, message);
-		} catch (Throwable e) {
+		} catch (Throwable ignored) {
 		}
 	}
 
 	// Loop:
-	// reception and demux received datagrams to process,
-	// according with message types and opcodes
-	//
+	// reception and demux received datagrams to process, according to message types and opcodes
 	public void run() {
 		byte[] buffer = new byte[65508];
 		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
