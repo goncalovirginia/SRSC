@@ -3,11 +3,8 @@
 //
 
 import javax.crypto.spec.DHParameterSpec;
-import java.util.Base64;
-import java.math.BigInteger;
-import java.security.*;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
+import java.security.AlgorithmParameterGenerator;
+import java.security.AlgorithmParameters;
 
 /**
  * Weight for the generation of DH initial Parameters

@@ -1,3 +1,5 @@
+package servers;
+
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -15,8 +17,8 @@ public class ClassFileServer extends ClassServer {
 
 	// the default port for the server.
 	// We also can pass a port as an argument - see below
-	private static int DefaultServerPort = 2001;
-	private String docroot;
+	private static final int DefaultServerPort = 2001;
+	private final String docroot;
 
 	/**
 	 * Constructs a ClassFileServer.
@@ -44,12 +46,12 @@ public class ClassFileServer extends ClassServer {
 	 * <code>   new ClassFileServer(port, docroot);
 	 * </code>
 	 */
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		System.out.println(
 				"USAGE: java ClassFileServer port docroot [TLS [true]]\n" +
 						"or, in case of client authentication required ...\n" +
 						"USAGE: java [-Djavax.net.ssl.trustStore=servertruststore] ClassFileServer port docroot [TLS [true]]");
-		System.out.println("");
+		System.out.println();
 		System.out.println(
 				"------------------------------------------------\n" +
 						"If the third argument is TLS, it will start as\n" +

@@ -1,6 +1,6 @@
-import java.net.*;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
-import javax.net.ssl.*;
 
 /*
  * This example demostrates how to use a SSLSocket as client to

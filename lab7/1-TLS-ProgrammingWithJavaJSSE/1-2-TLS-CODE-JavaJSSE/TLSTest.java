@@ -1,10 +1,11 @@
-import java.util.Arrays;
-import java.util.Base64;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.cert.*;
 import javax.net.SocketFactory;
-import javax.net.ssl.*;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.X509Certificate;
+import java.util.Base64;
 
 public class TLSTest {
 	public static void main(String[] args) throws Exception {

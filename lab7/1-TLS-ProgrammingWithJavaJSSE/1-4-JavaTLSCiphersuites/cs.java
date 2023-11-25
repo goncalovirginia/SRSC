@@ -1,10 +1,9 @@
+import javax.net.ssl.SSLContext;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import javax.net.ssl.SSLContext;
 
 public class cs {
 	public static void main(String[] args) throws NoSuchAlgorithmException, KeyManagementException {

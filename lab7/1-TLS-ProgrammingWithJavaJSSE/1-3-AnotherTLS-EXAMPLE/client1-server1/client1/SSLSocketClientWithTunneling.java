@@ -38,9 +38,12 @@
  * maintenance of any nuclear facility.
  */
 
-import java.net.*;
+import javax.net.ssl.HandshakeCompletedEvent;
+import javax.net.ssl.HandshakeCompletedListener;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
-import javax.net.ssl.*;
+import java.net.Socket;
 
 /*
  * This example illustrates how to do proxy Tunneling to access a

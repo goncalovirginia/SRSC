@@ -1,3 +1,5 @@
+package servers;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -114,7 +116,6 @@ public abstract class ClassServer implements Runnable {
 					out.flush();
 				} catch (IOException ie) {
 					ie.printStackTrace();
-					return;
 				}
 
 				// also manages exceptions sending HTTP error codes

@@ -1,12 +1,11 @@
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.Random;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Random;
 
 public class PBEFileEncryption {
 

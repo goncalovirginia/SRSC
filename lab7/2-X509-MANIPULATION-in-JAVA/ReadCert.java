@@ -2,10 +2,14 @@
  * ReadCert.java
  */
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.security.cert.*;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.cert.CRL;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 /**
  * Demo de como fazer uma pequena classe capaz de ler um certificado

@@ -1,9 +1,11 @@
+import javax.net.ServerSocketFactory;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
 import java.io.*;
-import java.net.*;
+import java.net.ServerSocket;
 import java.security.KeyStore;
-import javax.net.*;
-import javax.net.ssl.*;
-import javax.security.cert.X509Certificate;
 
 /* ClassFileServer.java -- um file server que pode
  * transferir ficheiros por http

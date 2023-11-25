@@ -1,10 +1,12 @@
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.PublicKey;
-import java.security.cert.*;
-import java.io.*;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLPeerUnverifiedException;
+import java.security.cert.Certificate;
 
 public class JavaHttpsInstrumentationExample {
 	public static void main(String[] args) {

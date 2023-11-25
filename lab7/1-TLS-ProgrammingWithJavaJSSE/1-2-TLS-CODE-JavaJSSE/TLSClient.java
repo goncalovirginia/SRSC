@@ -1,7 +1,7 @@
-import java.util.*;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
-import java.net.*;
-import javax.net.ssl.*;
 
 
 public class TLSClient {

@@ -2,11 +2,10 @@
 // SRSC 21-22 Labs
 //
 
-import java.util.Base64;
-import java.math.BigInteger;
-import java.security.*;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 /**
  * Genereration of Diffie-Hellman Keypair (Java)

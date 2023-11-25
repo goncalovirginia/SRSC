@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
-public class FileClientConsole {
+public class FileClientConsoleApplication {
 
 	// Output messages
-	private static final String USERNAME = "Username: ", PASSWORD = "Password: ", INVALID_CREDENTIALS = "Invalid credentials", INVALID_COMMAND = "Invalid command", INVALID_ARGUMENTS = "Invalid arguments";
+	private static final String LOGIN = "Login", USERNAME = "Username: ", PASSWORD = "Password: ", INVALID_CREDENTIALS = "Invalid credentials, try again", INVALID_COMMAND = "Invalid command", INVALID_ARGUMENTS = "Invalid arguments";
 
 	// Input commands
-	private static final String LOGIN = "login", LIST = "ls", MAKE_DIRECTORY = "mkdir", PUT = "put", GET = "get", COPY = "cp", REMOVE = "rm", INFO = "info";
+	private static final String LIST = "ls", MAKE_DIRECTORY = "mkdir", PUT = "put", GET = "get", COPY = "cp", REMOVE = "rm", INFO = "info", EXIT = "exit";
 
 	private static final FileClient fileClient = new FileClient();
 	private static String username, password;
@@ -24,6 +24,7 @@ public class FileClientConsole {
 		}
 
 		String line;
+		inputLoop:
 		while ((line = bufferedReader.readLine()) != null) {
 			String[] lineSplit = line.split(" ");
 			String command = lineSplit[0];
@@ -37,10 +38,12 @@ public class FileClientConsole {
 				case COPY -> copy(commandArgs);
 				case REMOVE -> remove(commandArgs);
 				case INFO -> info(commandArgs);
+				case EXIT -> {
+					break inputLoop;
+				}
 				default -> System.out.println(INVALID_COMMAND);
 			}
 		}
-
 	}
 
 	private static boolean login(BufferedReader bufferedReader) throws IOException {

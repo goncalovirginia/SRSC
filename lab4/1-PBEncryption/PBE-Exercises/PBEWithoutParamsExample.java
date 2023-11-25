@@ -1,12 +1,11 @@
 // Neste caso usa-se PBE sem parametros
 
-import java.security.Key;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
 
 /**
  * Examplo de uso do esquema PBE sem usar parametros

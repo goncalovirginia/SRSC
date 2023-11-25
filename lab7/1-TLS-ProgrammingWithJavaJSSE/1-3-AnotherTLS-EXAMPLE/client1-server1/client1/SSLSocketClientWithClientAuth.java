@@ -1,7 +1,8 @@
-import java.net.*;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
-import javax.net.ssl.*;
-import javax.security.cert.X509Certificate;
 import java.security.KeyStore;
 
 /*

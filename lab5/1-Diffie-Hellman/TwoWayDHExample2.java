@@ -3,14 +3,10 @@
 //
 
 
-import java.math.BigInteger;
-import java.security.*;
+import javax.crypto.KeyAgreement;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
-
-import javax.crypto.KeyAgreement;
-import javax.crypto.spec.DHParameterSpec;
 
 /**
  * Two party key agreement using Diffie-Hellman

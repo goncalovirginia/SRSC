@@ -6,11 +6,8 @@
 //       memory instrumentation and monitoring or computer-based memory-attacks.
 
 import java.io.FileInputStream;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public class ManagingSKeysKeystores {

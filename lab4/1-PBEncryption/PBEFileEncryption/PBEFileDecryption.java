@@ -1,11 +1,10 @@
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 public class PBEFileDecryption {
 	public static void main(String[] args) throws Exception {

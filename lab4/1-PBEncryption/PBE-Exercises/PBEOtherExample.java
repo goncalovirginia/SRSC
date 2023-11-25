@@ -5,15 +5,12 @@
 // convertida para uma chave de facto com SecretKeyFactory. O salt e
 // o iterador sao passados com a chave pre-processada com PBEParameterSpec
 
-import java.security.Security;
-import java.security.Key;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
+import java.security.Security;
 
 /**
  * Demonstracao de uso do esquema PBE com parametros (explicitos)

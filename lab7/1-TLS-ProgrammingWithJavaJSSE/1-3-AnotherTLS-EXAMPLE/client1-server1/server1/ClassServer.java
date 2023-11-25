@@ -1,6 +1,6 @@
 import java.io.*;
-import java.net.*;
-import javax.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /*
  * ClassServer.java -- a simple file server that can serve

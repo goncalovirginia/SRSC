@@ -2,14 +2,12 @@
 // SRSC 21-22 Labs
 //
 
+import javax.crypto.KeyAgreement;
+import javax.crypto.spec.DHParameterSpec;
 import java.math.BigInteger;
-import java.security.*;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
-
-import javax.crypto.KeyAgreement;
-import javax.crypto.spec.DHParameterSpec;
 
 /**
  * Two party key agreement using Diffie-Hellman

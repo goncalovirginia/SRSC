@@ -1,5 +1,6 @@
-import java.security.cert.*;
-import java.io.*;
+import java.io.FileInputStream;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 public class PrintCert {
 	public static void main(String args[]) {
