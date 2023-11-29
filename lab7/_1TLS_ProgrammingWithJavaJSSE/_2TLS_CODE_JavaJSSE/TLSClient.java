@@ -8,6 +8,10 @@ import java.io.*;
 
 public class TLSClient {
 
+	static {
+		System.setProperty("javax.net.ssl.trustStore", "lab7/_1TLS_ProgrammingWithJavaJSSE/_2TLS_CODE_JavaJSSE/clienttruststore");
+	}
+
 	public static void main(String[] args) {
 		BufferedReader in = new BufferedReader(
 				new InputStreamReader(System.in));
@@ -33,8 +37,7 @@ public class TLSClient {
 			System.out.println(supcsuites[i]);
 
 		try {
-			SSLSocket c =
-					(SSLSocket) f.createSocket(args[0], Integer.parseInt(args[1]));
+			SSLSocket c = (SSLSocket) f.createSocket(args[0], Integer.parseInt(args[1]));
 
 			c.startHandshake();
 

@@ -10,6 +10,7 @@ import java.security.cert.X509Certificate;
 import java.util.Base64;
 
 public class TLSTest {
+
 	public static void main(String[] args) throws Exception {
 		if (args.length != 2) {
 			System.err.println("Usage: TLSTest host port");

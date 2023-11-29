@@ -10,11 +10,9 @@ import java.util.Base64;
 
 public class KeyStores {
 
-	private static final Base64.Encoder base64Encoder = Base64.getEncoder();
-
 	public static KeyStore createOrLoadKeyStore(String filename, String password) throws Exception {
 		File file = new File(filename);
-		KeyStore keyStore = KeyStore.getInstance("JCEKS");
+		KeyStore keyStore = KeyStore.getInstance("JKS");
 
 		if (file.exists()) {
 			keyStore.load(new FileInputStream(file), password.toCharArray());

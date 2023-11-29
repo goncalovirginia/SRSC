@@ -3,7 +3,7 @@ SRSC 2223 Labs, hj
 This is a very simple tutorial, to teach you how to create any kind of
 certificate or certificate chain you want, if you want to use the
 openssl tool
-Of course, if you want toc reate something which can be used in a final
+Of course, if you want toc create something which can be used in a final
 internet production environment, you need to find a trusted CA ;-)
 
 But here we are going through how a certificate chain is

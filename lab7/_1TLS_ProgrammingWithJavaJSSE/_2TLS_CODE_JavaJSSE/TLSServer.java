@@ -23,8 +23,7 @@ public class TLSServer {
 			SSLContext sc = SSLContext.getInstance("TLS");
 			sc.init(kmf.getKeyManagers(), null, null);
 			SSLServerSocketFactory ssf = sc.getServerSocketFactory();
-			SSLServerSocket s
-					= (SSLServerSocket) ssf.createServerSocket(port);
+			SSLServerSocket s = (SSLServerSocket) ssf.createServerSocket(port);
 
 			s.setEnabledProtocols(confprotocols);
 			s.setEnabledCipherSuites(confciphersuites);

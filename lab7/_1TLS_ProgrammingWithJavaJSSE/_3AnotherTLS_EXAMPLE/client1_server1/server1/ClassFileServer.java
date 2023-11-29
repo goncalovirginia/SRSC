@@ -10,6 +10,7 @@ import javax.net.ssl.SSLServerSocketFactory;
 import java.io.*;
 import java.net.ServerSocket;
 import java.security.KeyStore;
+import java.util.Arrays;
 
 /* ClassFileServer.java -- um file server que pode
  * transferir ficheiros por http
@@ -38,7 +39,7 @@ public class ClassFileServer extends ClassServer {
 	 * <p>
 	 * java ClassFileServer <port> <path>
 	 */
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		System.out.println("Help: java ClassFileServer port docroot [TLS [true]]");
 		System.out.println("");
 		System.out.println("TLS true significa que o servidor suporta TLS\n");
@@ -58,21 +59,18 @@ public class ClassFileServer extends ClassServer {
 		if (args.length >= 3) {
 			type = args[2];
 		}
+
+		System.out.println(Arrays.toString(args));
+
 		try {
-			ServerSocketFactory ssf =
-					ClassFileServer.getServerSocketFactory(type);
+			ServerSocketFactory ssf = getServerSocketFactory(type);
 			ServerSocket ss = ssf.createServerSocket(port);
 
-
-			//
-
 			String[] supported = ((SSLServerSocket) ss).getSupportedCipherSuites();
-
 
 			System.out.println("Retorno de suites suportadas ...\n");
 			for (int i = 0; i < supported.length; i++)
 				System.out.println(supported[i]);
-
 
 			String[] anonCipherSuitesSupported = new String[supported.length];
 			int numAnonCipherSuitesSupported = 0;
@@ -125,7 +123,6 @@ public class ClassFileServer extends ClassServer {
 
 	private static ServerSocketFactory getServerSocketFactory(String type) {
 		if (type.equals("TLS")) {
-			SSLServerSocketFactory ssf = null;
 			try {
 				// setup key manager  - para autenticacao do servidor
 				SSLContext ctx;
@@ -137,21 +134,16 @@ public class ClassFileServer extends ClassServer {
 				kmf = KeyManagerFactory.getInstance("SunX509");
 				ks = KeyStore.getInstance("JKS");
 
-				ks.load(new FileInputStream("serverkeystore"), passphrase);
+				ks.load(new FileInputStream("lab7/_1TLS_ProgrammingWithJavaJSSE/_3AnotherTLS_EXAMPLE/client1_server1/server1/serverkeystore"), passphrase);
 				kmf.init(ks, passphrase);
 				ctx.init(kmf.getKeyManagers(), null, null);
 
-				ssf = ctx.getServerSocketFactory();
-
-
-				return ssf;
+				return ctx.getServerSocketFactory();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} else {
-			return ServerSocketFactory.getDefault();
 		}
-		return null;
+		return ServerSocketFactory.getDefault();
 	}
 
 	/**

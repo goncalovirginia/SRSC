@@ -12,6 +12,10 @@ import java.io.*;
 
 public class SSLSocketClient {
 
+	static {
+		System.setProperty("javax.net.ssl.trustStore", "lab7/_1TLS_ProgrammingWithJavaJSSE/_3AnotherTLS_EXAMPLE/client1_server1/client1/clienttruststore");
+	}
+
 	public static void main(String[] args) throws Exception {
 		try {
 			SSLSocketFactory factory =

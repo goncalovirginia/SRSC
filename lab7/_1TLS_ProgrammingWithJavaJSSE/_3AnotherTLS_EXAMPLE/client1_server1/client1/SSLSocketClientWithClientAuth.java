@@ -17,6 +17,10 @@ import java.security.KeyStore;
  */
 public class SSLSocketClientWithClientAuth {
 
+	static {
+		System.setProperty("javax.net.ssl.trustStore", "lab7/_1TLS_ProgrammingWithJavaJSSE/_3AnotherTLS_EXAMPLE/client1_server1/client1/clienttruststore");
+	}
+
 	public static void main(String[] args) throws Exception {
 		String host = null;
 		int port = -1;
@@ -59,7 +63,7 @@ public class SSLSocketClientWithClientAuth {
 				kmf = KeyManagerFactory.getInstance("SunX509");
 				ks = KeyStore.getInstance("JKS");
 
-				ks.load(new FileInputStream("clientkeystore"), passphrase);
+				ks.load(new FileInputStream("lab7/_1TLS_ProgrammingWithJavaJSSE/_3AnotherTLS_EXAMPLE/client1_server1/client1/clientkeystore"), passphrase);
 
 				kmf.init(ks, passphrase);
 				ctx.init(kmf.getKeyManagers(), null, null);
