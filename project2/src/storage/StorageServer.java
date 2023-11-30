@@ -3,16 +3,15 @@ package storage;
 import ssl.AbstractSSLServer;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 public class StorageServer extends AbstractSSLServer {
 
 	private final String filesRootPath;
 
-	public StorageServer(ServerSocket serverSocket, String filesRootPath) throws IOException {
-		super(serverSocket);
-		this.filesRootPath = filesRootPath;
+	public StorageServer(String propertiesFilePath) throws IOException {
+		super(propertiesFilePath);
+		filesRootPath = properties.getProperty("filesRootPath");
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -20,8 +19,7 @@ public class StorageServer extends AbstractSSLServer {
 			System.out.println("Usage: java StorageServer <properties file path>");
 		}
 
-		initProperties(args[0]);
-		new StorageServer(initServerSocket(), properties.getProperty("filesRootPath")).run();
+		new StorageServer(args[0]).run();
 	}
 
 	@Override
