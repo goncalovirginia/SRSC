@@ -9,12 +9,12 @@ public class StorageServer extends AbstractSSLServer {
 
 	private final String filesRootPath;
 
-	public StorageServer(String propertiesFilePath) throws IOException {
+	public StorageServer(String propertiesFilePath) throws Exception {
 		super(propertiesFilePath);
 		filesRootPath = properties.getProperty("filesRootPath");
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		if (args.length != 1) {
 			System.out.println("Usage: java StorageServer <properties file path>");
 		}
