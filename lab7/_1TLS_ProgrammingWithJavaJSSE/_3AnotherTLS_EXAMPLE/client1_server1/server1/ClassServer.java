@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /*
- * ClassServer.java -- a simple file server that can serve
+ * AbstractServer.java -- a simple file server that can serve
  * Http get request in both clear and secure channel
  */
 

@@ -9,83 +9,24 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.security.KeyStore;
 
-/* ClassFileServer.java --  a simple HTTP GET request file
+/* StorageServer.java --  a simple HTTP GET request file
  * supporting HTTP or HTTP/SSL (one-way or mutual authentication)
  */
 
 public class ClassFileServer extends ClassServer {
 
-	// the default port for the server.
-	// We also can pass a port as an argument - see below
-	private static int DefaultServerPort = 2001;
-	private String docroot;
+	private String filesRootPath;
 
-	/**
-	 * Constructs a ClassFileServer.
-	 *
-	 * @param path : path where the server reads the files
-	 *             modeling a doc (root) directory in the server side
-	 */
-	public ClassFileServer(ServerSocket ss, String docroot) throws IOException {
+	public ClassFileServer(ServerSocket ss, String filesRootPath) throws IOException {
 		super(ss);
-		this.docroot = docroot;
+		this.filesRootPath = filesRootPath;
 	}
 
-	/**
-	 * Main method
-	 * It creates the class server
-	 * It takes two command line arguments, the
-	 * port on which the server accepts requests and the
-	 * root of the path. To start up the server: <br><br>
-	 *
-	 * <code>   java ClassFileServer <port> <path>
-	 * </code><br><br> or add -Djavax.net.ssl.trustStore=servertruststore
-	 * for authenticated clientes when client authentication is wanted or
-	 * required
-	 *
-	 * <code>   new ClassFileServer(port, docroot);
-	 * </code>
-	 */
-	public static void main(String args[]) {
-		System.out.println(
-				"USAGE: java ClassFileServer port docroot [TLS [true]]\n" +
-						"or, in case of client authentication required ...\n" +
-						"USAGE: java [-Djavax.net.ssl.trustStore=servertruststore] ClassFileServer port docroot [TLS [true]]");
-		System.out.println("");
-		System.out.println(
-				"------------------------------------------------\n" +
-						"If the third argument is TLS, it will start as\n" +
-						"a TLS/SSL file server. Otherwise, it will be\n" +
-						"an ordinary HTTP (not secure) file server. \n" +
-						"If the fourth argument is true,it will require\n" +
-						"client authentication as well, implementing \n" +
-						"a mutual authentication process.\n" +
-						"In the case of mutual authentication\n" +
-						"it is necessary to control the trustability of the\n" +
-						"certificate sent by potential clients.\n" +
-						"To do this, it is necessary to import \n" +
-						"the necessary trust certificates to servertruststore\n" +
-						"a repository of trusted certificates accepted \n" +
-						"by this server.\n" +
-						"In this case it is necessary to pass the appropriate\n" +
-						"servertruststore to the server, when starting the server\n" +
-						"------------------------------------------------"
-		);
-
-		int port = DefaultServerPort; // Default port if no arguments
-		String docroot = "";          // Default doc dir if no arguments
-
-		if (args.length >= 1) {
-			port = Integer.parseInt(args[0]); // Port if not default
+	public static void main(String[] args) {
+		if (args.length != 4) {
+			System.out.println("Usage: java StorageServer <port> <filesroot> <true/false (use TLS)> <true/false (authenticate clients)>");
 		}
 
-		if (args.length >= 2) {
-			docroot = args[1];  // root of doc dir, for requesting
-		}
-		String type = "PlainSocket";
-		if (args.length >= 3) {
-			type = args[2];
-		}
 		try {
 			// Create a Socket Factory of type mentioned
 			// Plain Socket ... or SSL Socket and creates
@@ -93,9 +34,8 @@ public class ClassFileServer extends ClassServer {
 
 			// See the getServerSocketFactory code below
 
-			ServerSocketFactory ssf =
-					ClassFileServer.getServerSocketFactory(type);
-			ServerSocket ss = ssf.createServerSocket(port);
+			ServerSocketFactory ssf = ClassFileServer.getServerSocketFactory(Boolean.parseBoolean(args[2]));
+			ServerSocket ss = ssf.createServerSocket(4001);
 
 
 			// This server only enables TLSv1.2
@@ -111,16 +51,15 @@ public class ClassFileServer extends ClassServer {
 				((SSLServerSocket) ss).setNeedClientAuth(true);
 
 			}
-			new ClassFileServer(ss, docroot);
+			new ClassFileServer(ss, "docroot");
 		} catch (IOException e) {
-			System.out.println("Problem with sockets: unable to start ClassServer: " + e.getMessage());
+			System.out.println("Problem with sockets: unable to start AbstractServer: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
 
-	private static ServerSocketFactory getServerSocketFactory(String type) {
-		if (type.equals("TLS")) {
-			SSLServerSocketFactory ssf = null;
+	private static ServerSocketFactory getServerSocketFactory(boolean useTLS) {
+		if (useTLS) {
 			try {
 				// set up key manager to do server authentication
 				SSLContext ctx;
@@ -151,15 +90,12 @@ public class ClassFileServer extends ClassServer {
 				// protecting the entry of the keystore, returning
 				// java.security.Key object
 
-				ssf = ctx.getServerSocketFactory();
-				return ssf;
+				return ctx.getServerSocketFactory();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} else {
-			return ServerSocketFactory.getDefault();
 		}
-		return null;
+		return ServerSocketFactory.getDefault();
 	}
 
 	/**
@@ -173,7 +109,7 @@ public class ClassFileServer extends ClassServer {
 	public byte[] getBytes(String path)
 			throws IOException {
 		System.out.println("file asked by the client to send: " + path);
-		File f = new File(docroot + File.separator + path);
+		File f = new File(filesRootPath + File.separator + path);
 		int length = (int) (f.length());
 		if (length == 0) {
 			throw new IOException("File length is zero: " + path);

@@ -75,7 +75,7 @@ public class SSLSocketClientWithClientAuth {
 			/*
 			 * send http request
 			 *
-			 * See SSLSocketClient.java for more information about why
+			 * See AbstractSSLClient.java for more information about why
 			 * there is a forced handshake here when using PrintWriters.
 			 */
 
@@ -96,7 +96,7 @@ public class SSLSocketClientWithClientAuth {
 			 */
 			if (out.checkError())
 				System.out.println(
-						"SSLSocketClient: java.io.PrintWriter error");
+						"AbstractSSLClient: java.io.PrintWriter error");
 
 			/* read response */
 			BufferedReader in = new BufferedReader(

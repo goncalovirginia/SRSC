@@ -1,18 +1,14 @@
 package _1TLS_ProgrammingWithJavaJSSE._3AnotherTLS_EXAMPLE.client1_server1.server1;
 
-import ssl.ClassServer;
-
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
 import java.io.*;
 import java.net.ServerSocket;
 import java.security.KeyStore;
-import java.util.Arrays;
 
-/* ClassFileServer.java -- um file server que pode
+/* StorageServer.java -- um file server que pode
  * transferir ficheiros por http
  * Teste para HTTP ou HTTPS
  *
@@ -24,7 +20,7 @@ public class ClassFileServer extends ClassServer {
 	private String docroot;
 
 	/**
-	 * ClassFileServer.
+	 * StorageServer.
 	 *
 	 * @param path - path para localizar ficheiros pedidos
 	 */
@@ -37,10 +33,10 @@ public class ClassFileServer extends ClassServer {
 	 * Cria class server para ler ficheiros
 	 * Argumentos: porto e raiz do path
 	 * <p>
-	 * java ClassFileServer <port> <path>
+	 * java StorageServer <port> <path>
 	 */
 	public static void main(String[] args) {
-		System.out.println("Help: java ClassFileServer port docroot [TLS [true]]");
+		System.out.println("Help: java StorageServer port docroot [TLS [true]]");
 		System.out.println("");
 		System.out.println("TLS true significa que o servidor suporta TLS\n");
 		System.out.println("Noutro caso funciona apenas com HTTP\n");
@@ -60,8 +56,6 @@ public class ClassFileServer extends ClassServer {
 			type = args[2];
 		}
 
-		System.out.println(Arrays.toString(args));
-
 		try {
 			ServerSocketFactory ssf = getServerSocketFactory(type);
 			ServerSocket ss = ssf.createServerSocket(port);
@@ -74,9 +68,9 @@ public class ClassFileServer extends ClassServer {
 
 			String[] anonCipherSuitesSupported = new String[supported.length];
 			int numAnonCipherSuitesSupported = 0;
-			for (int i = 0; i < supported.length; i++) {
-				if (supported[i].indexOf("_anon_") > 0) {
-					anonCipherSuitesSupported[numAnonCipherSuitesSupported++] = supported[i];
+			for (String s : supported) {
+				if (s.contains("_anon_")) {
+					anonCipherSuitesSupported[numAnonCipherSuitesSupported++] = s;
 				}
 			}
 
@@ -115,7 +109,7 @@ public class ClassFileServer extends ClassServer {
 			}
 			new ClassFileServer(ss, docroot);
 		} catch (IOException e) {
-			System.out.println("Erro a iniciar ClassServer: " +
+			System.out.println("Erro a iniciar AbstractServer: " +
 					e.getMessage());
 			e.printStackTrace();
 		}

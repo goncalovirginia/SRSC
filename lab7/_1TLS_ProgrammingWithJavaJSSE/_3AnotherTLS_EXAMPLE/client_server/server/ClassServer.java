@@ -3,9 +3,10 @@ package _1TLS_ProgrammingWithJavaJSSE._3AnotherTLS_EXAMPLE.client_server.server;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Properties;
 
 /*
- * ClassServer.java -- a simple file server
+ * AbstractServer.java -- a simple file server
  * It can serve the HTTP GET request, in both clear
  * or SSL secure channel. It also supports SSL
  * one-way authentication (server only) or
@@ -15,14 +16,14 @@ import java.net.Socket;
  */
 
 /**
- * Based on ClassServer.java in JSSE tutorial
+ * Based on AbstractServer.java in JSSE tutorial
  */
 public abstract class ClassServer implements Runnable {
 
-	private ServerSocket server = null;
+	private final ServerSocket server;
 
 	/**
-	 * Constructs a ClassServer based on <b>ss</b> and
+	 * Constructs a AbstractServer based on <b>ss</b> and
 	 * obtains a file's bytecodes using the method <b>getBytes</b>.
 	 */
 	protected ClassServer(ServerSocket ss) {
