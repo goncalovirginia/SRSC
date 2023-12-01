@@ -20,10 +20,11 @@ public abstract class AbstractSSLServer {
 
 	protected AbstractSSLServer(String propertiesFilePath) throws Exception {
 		initProperties(propertiesFilePath);
+		System.setProperty("javax.net.ssl.trustStore", properties.getProperty("trustStore"));
 		initServerSocket();
 	}
 
-	protected SSLServerSocketFactory getSSLServerSocketFactory() throws Exception {
+	private SSLServerSocketFactory getSSLServerSocketFactory() throws Exception {
 		String keyStorePath = properties.getProperty("keyStore");
 		char[] keyStorePassword = properties.getProperty("keyStorePassword").toCharArray();
 
@@ -57,7 +58,13 @@ public abstract class AbstractSSLServer {
 		while (true) {
 			try {
 				Socket clientConnection = serverSocket.accept();
-				threadPool.execute(() -> processConnection(clientConnection));
+				threadPool.execute(() -> {
+					processConnection(clientConnection);
+					try {
+						clientConnection.close();
+					} catch (IOException ignored) {
+					}
+				});
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

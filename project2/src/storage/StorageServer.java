@@ -17,6 +17,7 @@ public class StorageServer extends AbstractSSLServer {
 	public static void main(String[] args) throws Exception {
 		if (args.length != 1) {
 			System.out.println("Usage: java StorageServer <properties file path>");
+			return;
 		}
 
 		new StorageServer(args[0]).run();
@@ -24,20 +25,16 @@ public class StorageServer extends AbstractSSLServer {
 
 	@Override
 	protected void processConnection(Socket clientConnection) {
-		sendFileBytes(clientConnection);
-
-		try {
-			clientConnection.close();
-		} catch (IOException ignored) {
-		}
+		getFile(clientConnection);
 	}
 
-	private void sendFileBytes(Socket clientConnection) {
+	private void getFile(Socket clientConnection) {
 		try {
 			DataOutputStream out = new DataOutputStream(clientConnection.getOutputStream());
 			try {
 				BufferedReader in = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
 				String filePath = getFilePath(in);
+				System.out.println("Requested file: " + filePath);
 				byte[] fileBytes = getFileBytes(filePath);
 
 				try {
@@ -86,7 +83,6 @@ public class StorageServer extends AbstractSSLServer {
 	}
 
 	private byte[] getFileBytes(String filePath) throws IOException {
-		System.out.println("Requested file: " + filePath);
 		File f = new File(filesRootPath + File.separator + filePath);
 		int length = (int) (f.length());
 		if (length == 0) {

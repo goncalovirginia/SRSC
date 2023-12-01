@@ -1,9 +1,11 @@
 import fileService.FileClient;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Properties;
 
 public class FileClientApplication {
 
@@ -13,15 +15,26 @@ public class FileClientApplication {
 	// Input commands
 	private static final String LIST = "ls", MAKE_DIRECTORY = "mkdir", PUT = "put", GET = "get", COPY = "cp", REMOVE = "rm", INFO = "info", EXIT = "exit";
 
-	private static final FileClient fileClient = new FileClient();
+	private static FileClient fileClient;
 	private static String username, password;
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
+		Properties properties = new Properties();
+		properties.load(new BufferedReader(new FileReader("project2/src/fileService/fileclient.properties")));
+
+		System.setProperty("javax.net.ssl.trustStore", properties.getProperty("trustStore"));
+
+		String fileHost = properties.getProperty("fileHost");
+		int filePort = Integer.parseInt(properties.getProperty("filePort"));
+		fileClient = new FileClient(fileHost, filePort, properties);
+
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
+		System.out.println("Login");
 		while (!login(bufferedReader)) {
 			System.out.println(INVALID_CREDENTIALS);
 		}
+		System.out.println("Logged in");
 
 		String line;
 		inputLoop:
@@ -73,10 +86,13 @@ public class FileClientApplication {
 		}
 	}
 
-	private static void get(String[] commandArgs) {
-		if (commandArgs.length != 2) {
-			System.out.println(INVALID_ARGUMENTS);
+	private static void get(String[] commandArgs) throws IOException {
+		if (commandArgs.length != 1) {
+			System.out.println("get <file path>");
 		}
+
+		byte[] fileBytes = fileClient.getFile(username, commandArgs[0]);
+		System.out.println(new String(fileBytes));
 	}
 
 	private static void copy(String[] commandArgs) {
