@@ -59,8 +59,8 @@ public abstract class AbstractSSLServer {
 			try {
 				Socket clientConnection = serverSocket.accept();
 				threadPool.execute(() -> {
-					processConnection(clientConnection);
 					try {
+						processConnection(clientConnection);
 						clientConnection.close();
 					} catch (IOException ignored) {
 					}
@@ -71,6 +71,6 @@ public abstract class AbstractSSLServer {
 		}
 	}
 
-	protected abstract void processConnection(Socket clientConnection);
+	protected abstract void processConnection(Socket clientConnection) throws IOException;
 
 }

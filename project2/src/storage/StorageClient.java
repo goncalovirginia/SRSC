@@ -1,6 +1,7 @@
 package storage;
 
 import ssl.AbstractSSLClient;
+import utils.HttpParser;
 
 import java.io.*;
 import java.util.Properties;
@@ -22,24 +23,14 @@ public class StorageClient extends AbstractSSLClient {
 		}
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		HttpParser httpParser = new HttpParser();
+		httpParser.parseRequest(in);
 
-		if (!in.readLine().endsWith("OK")) {
+		if (!httpParser.getRequestLine().endsWith("OK")) {
 			return new byte[]{};
 		}
-		in.readLine();
-		in.readLine();
-		in.readLine();
 
-		String inputLine;
-		StringBuilder fileContent = new StringBuilder();
-		while ((inputLine = in.readLine()) != null) {
-			fileContent.append(inputLine).append("\n");
-		}
-
-		in.close();
-		out.close();
-
-		return fileContent.toString().getBytes();
+		return httpParser.getBody().getBytes();
 	}
 
 }

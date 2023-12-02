@@ -1,6 +1,7 @@
 package storage;
 
 import ssl.AbstractSSLServer;
+import utils.HttpParser;
 
 import java.io.*;
 import java.net.Socket;
@@ -24,17 +25,27 @@ public class StorageServer extends AbstractSSLServer {
 	}
 
 	@Override
-	protected void processConnection(Socket clientConnection) {
-		getFile(clientConnection);
+	protected void processConnection(Socket clientConnection) throws IOException {
+		DataOutputStream out = new DataOutputStream(clientConnection.getOutputStream());
+		BufferedReader in = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
+		HttpParser httpParser = new HttpParser();
+		httpParser.parseRequest(in);
+		String[] requestLineParts = httpParser.getRequestLine().split(" ");
+
+		switch (requestLineParts[0]) {
+			case "POST" -> postFile(out, httpParser);
+			case "GET" -> getFile(out, requestLineParts[1]);
+		}
 	}
 
-	private void getFile(Socket clientConnection) {
+	private void postFile(DataOutputStream out, HttpParser httpParser) {
+
+	}
+
+	private void getFile(DataOutputStream out, String filePath) {
+		System.out.println("Requested file: " + filePath);
 		try {
-			DataOutputStream out = new DataOutputStream(clientConnection.getOutputStream());
 			try {
-				BufferedReader in = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
-				String filePath = getFilePath(in);
-				System.out.println("Requested file: " + filePath);
 				byte[] fileBytes = getFileBytes(filePath);
 
 				try {
@@ -58,32 +69,8 @@ public class StorageServer extends AbstractSSLServer {
 		}
 	}
 
-	private String getFilePath(BufferedReader in) throws IOException {
-		String line = in.readLine();
-		String path = "";
-
-		if (line.startsWith("GET /")) {
-			line = line.substring(5, line.length() - 1).trim();
-			int index = line.indexOf(' ');
-			if (index != -1) {
-				path = line.substring(0, index);
-			}
-		}
-
-		// process the rest of header
-		do {
-			line = in.readLine();
-		} while ((!line.isEmpty()) && (line.charAt(0) != '\r') && (line.charAt(0) != '\n'));
-
-		if (path.isEmpty()) {
-			throw new IOException("Malformed HTTP Header");
-		}
-
-		return path;
-	}
-
 	private byte[] getFileBytes(String filePath) throws IOException {
-		File f = new File(filesRootPath + File.separator + filePath);
+		File f = new File(filesRootPath + filePath);
 		int length = (int) (f.length());
 		if (length == 0) {
 			throw new IOException("File length is zero: " + filePath);

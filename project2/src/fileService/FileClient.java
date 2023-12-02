@@ -1,6 +1,7 @@
 package fileService;
 
 import ssl.AbstractSSLClient;
+import utils.HttpParser;
 
 import java.io.*;
 import java.util.Properties;
@@ -17,7 +18,7 @@ public class FileClient extends AbstractSSLClient {
 
 	public byte[] getFile(String username, String filePath) throws IOException {
 		PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
-		out.println("GET " + filePath + " HTTP/1.0");
+		out.println("GET /" + username + "/" + filePath + " HTTP/1.0");
 		out.println();
 		out.flush();
 
@@ -26,16 +27,14 @@ public class FileClient extends AbstractSSLClient {
 		}
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		StringBuilder fileContent = new StringBuilder();
-		String inputLine;
-		while ((inputLine = in.readLine()) != null) {
-			fileContent.append(inputLine).append("\n");
+		HttpParser httpParser = new HttpParser();
+		httpParser.parseRequest(in);
+
+		if (!httpParser.getRequestLine().endsWith("OK")) {
+			return new byte[]{};
 		}
 
-		in.close();
-		out.close();
-
-		return fileContent.toString().getBytes();
+		return httpParser.getBody().getBytes();
 	}
 
 
