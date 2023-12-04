@@ -13,25 +13,20 @@ import java.net.Socket;
 public class FileServer extends AbstractSSLServer {
 
 	private final String filesRootPath;
-	private final StorageClient storageClient;
-	//private final AuthClient authClient;
-	//private final AccessControlClient accessControlClient;
+	private final String storageHost, authHost, accessControlHost;
+	private final int storagePort, authPort, accessControlPort;
 
 	public FileServer(String propertiesFilePath) throws Exception {
 		super(propertiesFilePath);
-		filesRootPath = properties.getProperty("filesRootPath");
-		/*
-		String authHost = properties.getProperty("authHost");
-		int authPort = Integer.parseInt(properties.getProperty("authPort"));
-		authClient = new AuthClient(authHost, authPort, properties);
 
-		String accessControlHost = properties.getProperty("accessControlHost");
-		int accessControlPort = Integer.parseInt(properties.getProperty("accessControlPort"));
-		accessControlClient = new AccessControlClient(accessControlHost, accessControlPort, properties);
-		*/
-		String storageHost = properties.getProperty("storageHost");
-		int storagePort = Integer.parseInt(properties.getProperty("storagePort"));
-		storageClient = new StorageClient(storageHost, storagePort, properties);
+		filesRootPath = properties.getProperty("filesRootPath");
+
+		authHost = properties.getProperty("authHost");
+		authPort = Integer.parseInt(properties.getProperty("authPort"));
+		accessControlHost = properties.getProperty("accessControlHost");
+		accessControlPort = Integer.parseInt(properties.getProperty("accessControlPort"));
+		storageHost = properties.getProperty("storageHost");
+		storagePort = Integer.parseInt(properties.getProperty("storagePort"));
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -45,10 +40,10 @@ public class FileServer extends AbstractSSLServer {
 
 	@Override
 	protected void processConnection(Socket clientConnection) throws IOException {
-		DataOutputStream out = new DataOutputStream(clientConnection.getOutputStream());
 		BufferedReader in = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
+		DataOutputStream out = new DataOutputStream(clientConnection.getOutputStream());
 		HttpParser httpParser = new HttpParser();
-		httpParser.parseRequest(in);
+		httpParser.parse(in);
 		String[] requestLineParts = httpParser.getRequestLine().split(" ");
 
 		switch (requestLineParts[0]) {
@@ -58,13 +53,33 @@ public class FileServer extends AbstractSSLServer {
 	}
 
 	private void postFile(DataOutputStream out, HttpParser httpParser) {
-
+		System.out.println("postFile: " + httpParser.getRequestLine().split(" ")[1]);
+		try {
+			try {
+				StorageClient storageClient = new StorageClient(storageHost, storagePort, properties);
+				String requestResult = storageClient.postFile(httpParser);
+				try {
+					out.writeBytes(requestResult + "\r\n\r\n");
+					out.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				out.writeBytes("HTTP/1.0 500 " + e.getMessage() + "\r\n\r\n");
+				out.flush();
+			}
+		} catch (IOException e) {
+			System.out.println("error writing response: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	private void getFile(DataOutputStream out, String filePath) {
-		System.out.println("Requested file: " + filePath);
+		System.out.println("getFile: " + filePath);
 		try {
 			try {
+				StorageClient storageClient = new StorageClient(storageHost, storagePort, properties);
 				byte[] fileBytes = storageClient.getFile(filePath);
 
 				try {

@@ -47,8 +47,8 @@ public abstract class AbstractSSLServer {
 		SSLServerSocketFactory ssf = getSSLServerSocketFactory();
 		SSLServerSocket ss = (SSLServerSocket) ssf.createServerSocket(Integer.parseInt(properties.getProperty("port")));
 
-		ss.setEnabledProtocols(new String[]{"TLSv1.2"});
-		ss.setEnabledCipherSuites(new String[]{"TLS_RSA_WITH_AES_128_GCM_SHA256"});
+		ss.setEnabledProtocols(new String[]{properties.getProperty("tlsVersion")});
+		ss.setEnabledCipherSuites(properties.getProperty("cypherSuites").split(","));
 		ss.setNeedClientAuth(Boolean.parseBoolean(properties.getProperty("authClients")));
 
 		serverSocket = ss;

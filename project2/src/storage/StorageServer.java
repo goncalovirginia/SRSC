@@ -26,10 +26,10 @@ public class StorageServer extends AbstractSSLServer {
 
 	@Override
 	protected void processConnection(Socket clientConnection) throws IOException {
-		DataOutputStream out = new DataOutputStream(clientConnection.getOutputStream());
 		BufferedReader in = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
+		DataOutputStream out = new DataOutputStream(clientConnection.getOutputStream());
 		HttpParser httpParser = new HttpParser();
-		httpParser.parseRequest(in);
+		httpParser.parse(in);
 		String[] requestLineParts = httpParser.getRequestLine().split(" ");
 
 		switch (requestLineParts[0]) {
@@ -39,11 +39,38 @@ public class StorageServer extends AbstractSSLServer {
 	}
 
 	private void postFile(DataOutputStream out, HttpParser httpParser) {
+		System.out.println("postFile: " + httpParser.getRequestLine().split(" ")[1]);
+		try {
+			try {
+				saveFileToDisk(httpParser);
+				try {
+					out.writeBytes("HTTP/1.0 204 OK\r\n\r\n");
+					out.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				out.writeBytes("HTTP/1.0 400 " + e.getMessage() + "\r\n\r\n");
+				out.flush();
+			}
+		} catch (IOException e) {
+			System.out.println("error writing response: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 
+	private void saveFileToDisk(HttpParser httpParser) throws IOException {
+		String filePath = httpParser.getRequestLine().split(" ")[1];
+		byte[] data = httpParser.getBody().getBytes();
+
+		OutputStream out = new FileOutputStream(filesRootPath + filePath);
+		out.write(data);
+		out.close();
 	}
 
 	private void getFile(DataOutputStream out, String filePath) {
-		System.out.println("Requested file: " + filePath);
+		System.out.println("getFile: " + filePath);
 		try {
 			try {
 				byte[] fileBytes = getFileBytes(filePath);
@@ -59,8 +86,7 @@ public class StorageServer extends AbstractSSLServer {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				out.writeBytes("HTTP/1.0 400 " + e.getMessage() + "\r\n");
-				out.writeBytes("Content-Type: text/html\r\n\r\n");
+				out.writeBytes("HTTP/1.0 400 " + e.getMessage() + "\r\n\r\n");
 				out.flush();
 			}
 		} catch (IOException e) {
@@ -74,14 +100,12 @@ public class StorageServer extends AbstractSSLServer {
 		int length = (int) (f.length());
 		if (length == 0) {
 			throw new IOException("File length is zero: " + filePath);
-		} else {
-			FileInputStream fin = new FileInputStream(f);
-			DataInputStream in = new DataInputStream(fin);
-
-			byte[] bytecodes = new byte[length];
-			in.readFully(bytecodes);
-			return bytecodes;
 		}
+
+		DataInputStream in = new DataInputStream(new FileInputStream(f));
+		byte[] fileBytes = new byte[length];
+		in.readFully(fileBytes);
+		return fileBytes;
 	}
 
 

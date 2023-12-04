@@ -1,29 +1,30 @@
 package utils;
 
 import java.io.*;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HttpParser {
 
 	private String requestLine;
-	private final Hashtable<String, String> headers;
+	private final Map<String, String> headers;
 	private final StringBuilder body;
 
 	public HttpParser() {
-		headers = new Hashtable<>();
+		headers = new HashMap<>();
 		body = new StringBuilder();
 	}
 
-	public void parseRequest(BufferedReader in) {
+	public void parse(BufferedReader in) {
 		try {
 			setRequestLine(in.readLine());
 
-			String header;
-			while (!(header = in.readLine()).isEmpty()) {
-				appendHeaderParameter(header);
+			String headerParameter;
+			while (!(headerParameter = in.readLine()).isEmpty()) {
+				appendHeaderParameter(headerParameter);
 			}
 
-			if (headers.isEmpty()) return;
+			if (headers.get("Content-Length") == null) return;
 
 			String bodyLine;
 			while ((bodyLine = in.readLine()) != null) {
@@ -57,12 +58,36 @@ public class HttpParser {
 		return headers.get(headerName);
 	}
 
+	public String getAllHeaderParameters() {
+		StringBuilder stringBuilder = new StringBuilder();
+
+		for (Map.Entry<String, String> header : headers.entrySet()) {
+			stringBuilder.append(header.getKey()).append(": ").append(header.getValue()).append("\r\n");
+		}
+
+		return stringBuilder.toString();
+	}
+
 	public String getBody() {
 		return body.toString();
 	}
 
 	private void appendBody(String bodyLine) {
 		body.append(bodyLine).append("\r\n");
+	}
+
+	public String getFullRequest() {
+		StringBuilder stringBuilder = new StringBuilder();
+
+		stringBuilder.append(requestLine).append("\r\n");
+
+		for (Map.Entry<String, String> header : headers.entrySet()) {
+			stringBuilder.append(header.getKey()).append(": ").append(header.getValue()).append("\r\n");
+		}
+
+		stringBuilder.append("\r\n").append(body);
+
+		return stringBuilder.toString();
 	}
 
 }

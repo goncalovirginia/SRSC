@@ -1,9 +1,6 @@
 import fileService.FileClient;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -15,18 +12,21 @@ public class FileClientApplication {
 	// Input commands
 	private static final String LIST = "ls", MAKE_DIRECTORY = "mkdir", PUT = "put", GET = "get", COPY = "cp", REMOVE = "rm", INFO = "info", EXIT = "exit";
 
-	private static FileClient fileClient;
 	private static String username, password;
 
+	private static String fileHost;
+	private static int filePort;
+
+	private static Properties properties;
+
 	public static void main(String[] args) throws Exception {
-		Properties properties = new Properties();
+		properties = new Properties();
 		properties.load(new BufferedReader(new FileReader("project2/src/fileService/fileclient.properties")));
 
 		System.setProperty("javax.net.ssl.trustStore", properties.getProperty("trustStore"));
 
-		String fileHost = properties.getProperty("fileHost");
-		int filePort = Integer.parseInt(properties.getProperty("filePort"));
-		fileClient = new FileClient(fileHost, filePort, properties);
+		fileHost = properties.getProperty("fileHost");
+		filePort = Integer.parseInt(properties.getProperty("filePort"));
 
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -59,7 +59,9 @@ public class FileClientApplication {
 		}
 	}
 
-	private static boolean login(BufferedReader bufferedReader) throws IOException {
+	private static boolean login(BufferedReader bufferedReader) throws Exception {
+		FileClient fileClient = new FileClient(fileHost, filePort, properties);
+
 		System.out.print(USERNAME);
 		username = bufferedReader.readLine();
 		System.out.print(PASSWORD);
@@ -68,49 +70,85 @@ public class FileClientApplication {
 		return fileClient.login(username, password);
 	}
 
-	private static void list(String[] commandArgs) {
+	private static void list(String[] commandArgs) throws Exception {
 		if (commandArgs.length > 1) {
 			System.out.println(INVALID_ARGUMENTS);
+			return;
 		}
+
+		FileClient fileClient = new FileClient(fileHost, filePort, properties);
 	}
 
-	private static void makeDirectory(String[] commandArgs) {
+	private static void makeDirectory(String[] commandArgs) throws Exception {
 		if (commandArgs.length != 2) {
 			System.out.println(INVALID_ARGUMENTS);
+			return;
 		}
+
+		FileClient fileClient = new FileClient(fileHost, filePort, properties);
 	}
 
-	private static void put(String[] commandArgs) {
+	private static void put(String[] commandArgs) throws Exception {
 		if (commandArgs.length != 2) {
 			System.out.println(INVALID_ARGUMENTS);
+			return;
 		}
+
+		byte[] fileBytes = getFileBytes(commandArgs[0]);
+		FileClient fileClient = new FileClient(fileHost, filePort, properties);
+		String requestResult = fileClient.postFile(username, commandArgs[1], fileBytes);
+		System.out.println(requestResult);
 	}
 
-	private static void get(String[] commandArgs) throws IOException {
+	private static byte[] getFileBytes(String filePath) throws IOException {
+		File f = new File(filePath);
+		int length = (int) (f.length());
+		if (length == 0) {
+			throw new IOException("File length is zero: " + filePath);
+		}
+
+		DataInputStream in = new DataInputStream(new FileInputStream(f));
+		byte[] fileBytes = new byte[length];
+		in.readFully(fileBytes);
+		return fileBytes;
+	}
+
+	private static void get(String[] commandArgs) throws Exception {
 		if (commandArgs.length != 1) {
 			System.out.println("get <file path>");
+			return;
 		}
 
+		FileClient fileClient = new FileClient(fileHost, filePort, properties);
 		byte[] fileBytes = fileClient.getFile(username, commandArgs[0]);
 		System.out.println(new String(fileBytes));
 	}
 
-	private static void copy(String[] commandArgs) {
+	private static void copy(String[] commandArgs) throws Exception {
 		if (commandArgs.length != 2) {
 			System.out.println(INVALID_ARGUMENTS);
+			return;
 		}
+
+		FileClient fileClient = new FileClient(fileHost, filePort, properties);
 	}
 
-	private static void remove(String[] commandArgs) {
+	private static void remove(String[] commandArgs) throws Exception {
 		if (commandArgs.length != 2) {
 			System.out.println(INVALID_ARGUMENTS);
+			return;
 		}
+
+		FileClient fileClient = new FileClient(fileHost, filePort, properties);
 	}
 
-	private static void info(String[] commandArgs) {
+	private static void info(String[] commandArgs) throws Exception {
 		if (commandArgs.length != 2) {
 			System.out.println(INVALID_ARGUMENTS);
+			return;
 		}
+
+		FileClient fileClient = new FileClient(fileHost, filePort, properties);
 	}
 
 }
